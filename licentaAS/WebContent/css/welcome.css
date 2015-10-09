@@ -1,0 +1,21 @@
+
+.slide {
+    height: 50px;
+    border: solid;
+    margin-left: auto;
+    margin-right: auto;
+    position: fixed;
+    width: 990px;
+    padding: 0px;
+}
+#slide1 {
+    border-color: red;
+}
+
+#slide2 {
+    border-color: blue;
+}
+
+#slide3 {
+    border-color: green;
+}
