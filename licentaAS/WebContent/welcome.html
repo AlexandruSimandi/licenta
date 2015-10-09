@@ -1,14 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Facebook Login JavaScript Example</title>
+<title>SimSec</title>
 <meta charset="UTF-8">
+<link rel="stylesheet" href="css/welcome.css">
+<script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="js/welcome.js"></script>
 </head>
 <body>
 
 <h1><a href="https://www.facebook.com/dialog/oauth?
 client_id=475736505939108&redirect_uri=http://localhost:8080/mvc/hello&
 scope=email">Hello</a></h1>
+<h1><a id="next-slide" href="#">next</a></h1>
+
+<div id="slide1" class="slide active-slide"></div>
+<div id="slide2" class="slide"></div>
+<div id="slide3" class="slide"></div>
 
 
 </body>
