@@ -7,9 +7,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class hello{
  
-	@RequestMapping("/hello")
-	public String helloWorld(@RequestParam String code) {
-		System.out.println(code);
-		return "hello";
+	@RequestMapping("/")
+	public String helloWorld(@RequestParam(required = false) String code) {
+		if(code != null){
+			System.out.println(code);	
+		}
+		return "welcome";
 	}
 }
