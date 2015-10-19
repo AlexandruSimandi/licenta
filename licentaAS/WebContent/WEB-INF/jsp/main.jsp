@@ -1,17 +1,26 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
 <!DOCTYPE html>
 <html>
 
 <head>
     <title>SimSec</title>
 	<meta charset="UTF-8">
-    <link rel="stylesheet" href="css/welcome.css">
+    <link rel="stylesheet" href="css/main.css">
     <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
-    <script type="text/javascript" src="js/welcome.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+    <c:if test="${screenStatus == 'logged'}">  
+		<script>
+			$(window).ready(function(){
+				$('#next-button').trigger('click');
+			});
+		</script>
+	</c:if>  
 </head>
 
 <body>
     <div class="card">
-        <h1>Header</h1>
+        <h1>Header ${screenStatus}</h1>
     </div>
     <div class="card">
     	<h1><a id="next-button" href="#">Next</a></h1>
@@ -26,7 +35,7 @@
     <div class="card">
        	<div id="active-slide" class="slide">
 			<a href="https://www.facebook.com/dialog/oauth?
-	client_id=475736505939108&redirect_uri=http://localhost:8080&
+	client_id=475736505939108&redirect_uri=http://localhost:8080/loginSolver&
 	scope=email">
 			   <img id="facebook-login" src="img/ryt6L.png" alt="facebook login">
 			</a>
