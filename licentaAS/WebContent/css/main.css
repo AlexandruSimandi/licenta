@@ -25,7 +25,7 @@ hr {
 
 .slide-title {
 	width: 100px;
-	margin-top: -20px;
+	margin-top: -26px;
 	font-size: 19px;
 	text-align: center;
 	display: inline-block;
@@ -57,7 +57,7 @@ h1 {
 
 
 .slide {
-	width: 300px;
+	width: 1100px;
 	height: 200px;
 	border: solid red;
 	position: fixed;
