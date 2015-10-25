@@ -1,16 +1,20 @@
 a {
-	color: #00CF9B;
+	color: #141823;
 	text-decoration: none;
 }
 
 body {
-    background-color: #3B3A3F;
+    background-color: #E9EAED;
 	margin: 0px;
 }
 
 .card {
     width: 100%;
-    color: #00CF9B;
+    color: #141823;
+	margin-top: 30px;
+/*	background-color: #fff;*/
+	border-bottom-color: #D0D1D5;
+
 }
 
 #facebook-login {
@@ -19,12 +23,9 @@ body {
     border-radius: 13px;
 }
 
-hr {
-	border-color: #00CF9B;
-}
 
 .slide-title {
-	width: 100px;
+	width: 150px;
 	margin-top: -26px;
 	font-size: 19px;
 	text-align: center;
@@ -32,6 +33,7 @@ hr {
 	margin-left: 0px;
 	margin-right: 0px;
 	position: fixed;
+/*	background-color: #fff;*/
 }
 
 .clearfix:after {
@@ -51,15 +53,38 @@ h1 {
 	margin-left: auto;
 	margin-right: auto;
 	text-align: center;
+	color: #34495e;
+	width: 300px;
 }
 
-
-
-
 .slide {
+	margin-top: 40px;
 	width: 1100px;
-	height: 200px;
-	border: solid red;
+	padding: 6px;
+	background-color: #fff;
+	border-radius: 6px;
+	/*border: solid #ccc;*/
 	position: fixed;
-	text-align: center;
+	border-color: #D0D1D5;
+	border-radius: 6px;
+	border-style: solid;
+	border-width: 1px;
+
+}
+
+.loadingBarContainer {
+	border: solid #5049ff;
+	height: 20px;
+	width: 300px;
+}
+
+#loadingBar {
+	background-color: blue;
+	height: 20px;
+	width: 0%;
+}
+
+h3 {
+	border: solid black;
+	width: 300px;
 }
