@@ -1,9 +1,13 @@
 package ro.asimandi.simsec.controllers;
 
+import java.io.IOException;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import ro.asimandi.simsec.services.FacebookService;
  
 @Controller
 public class MainController{
@@ -17,8 +21,9 @@ public class MainController{
 	}
 	
 	@RequestMapping("/loginSolver")	
-	public String login(@RequestParam String code) {
+	public String login(@RequestParam String code) throws IOException {
 		this.code = code;
+		FacebookService.readPosts(code);
 		return "redirect:/logged";
 	}
 	
