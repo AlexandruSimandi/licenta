@@ -36,8 +36,8 @@
        		<p>This app will scan your facebook posts for potential threats to your personal and professional life.</p>
        		<p>Posts such as "I hate my boss", "I hate going to work, i am so sleepy.", "Going on a trip for a week, nobody will be home." will be detected as potentially dangerous and pointed out to the user in form of recommendations to either be deleted or hidden from public view.</p>
 			<a href="https://www.facebook.com/dialog/oauth?
-	client_id=475736505939108&redirect_uri=http://localhost:8080/loginSolver&
-	scope=email">
+	client_id=475736505939108&redirect_uri=http://localhost/loginSolver&
+	scope=user_posts">
 			   <img id="facebook-login" src="img/ryt6L.png" alt="facebook login">
 			</a>
        	</div>
