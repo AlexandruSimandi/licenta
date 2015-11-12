@@ -1,4 +1,5 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <!DOCTYPE html>
 <html>
@@ -12,26 +13,23 @@
     <c:if test="${screenStatus == 'logged'}">  
 		<script>
 			$(window).ready(function(){
-				$('#next-button').trigger('click');
-				simulateLoad();
+				nextSlide(1);
+				nextSlide(1000);
 			});
 		</script>
 	</c:if>  
 </head>
 
 <body>
-    <div class="card">
-        <h1>Status: ${screenStatus}</h1>
+    <div class="material-header">
+		<h1>Status: ${screenStatus}</h1>
     </div>
-
-    <div class="card">
+    <div class="material-progress">
   		<div id="active-slide-title" class="slide-title">Log in</div>
 		<div class="slide-title right-slide-title">Loading</div>
 		<div class="slide-title right-slide-title">Results</div>
    		<div class="slide-title right-slide-title">Recommendations</div>
     </div>
-	<hr>
-    <div class="card">
        	<div id="active-slide" class="slide">
        		<p>This app will scan your facebook posts for potential threats to your personal and professional life.</p>
        		<p>Posts such as "I hate my boss", "I hate going to work, i am so sleepy.", "Going on a trip for a week, nobody will be home." will be detected as potentially dangerous and pointed out to the user in form of recommendations to either be deleted or hidden from public view.</p>
@@ -50,12 +48,23 @@
        	</div>
        	<div class="slide right-slide">
        		<p>These links are purely fictional</p>
-       		<p>Here are the posts that might represent danger:</p>
+       		<p>Here are the posts that might contain foul language:</p>
        		<ul>
-       			<li><a href="#">link1</a></li>
-       			<li><a href="#">link2</a></li>
-       			<li><a href="#">link3</a></li>
+       			<c:forEach items="${dangerousPostList}" var="post" varStatus="loop">
+       				<li><a title="${post.message}" href="${post.actions[0].link}">post${loop.index + 1} - <fmt:formatDate value="${post.createdTime}" pattern="dd-MM-yyyy HH:mm:ss" /></a></li>      			
+       			</c:forEach>
        		</ul>
+       		<p>Here are the posts that might affect professional work life:</p>
+       		<ul>
+       			<c:forEach items="${workThreatList}" var="workPost" varStatus="workLoop">
+       				<li title="${workPost.message}">post${workLoop.index + 1}</li>
+				</c:forEach>		
+       		</ul>
+       		<p>Privacy settings:</p>
+       		<ul>
+       			Who can see yours posts: ${postPrivacy}
+       		</ul>
+       		
        		<h3>
        			<a id="next-button" href="#">Continue with recommendations</a>
        		</h3>
@@ -70,7 +79,6 @@
        		<p>Thank you very much!</p>
        		<h3><a href="/">Back to login</a></h3>
        	</div>
-    </div>
 </body>
 
 </html>
