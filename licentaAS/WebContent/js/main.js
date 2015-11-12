@@ -3,7 +3,6 @@ var numberOfLeftSlides;
 
 var cardTitleWidth = 150;
 var cardWidth = 1100;
-var animationDuration = 1000;
 
 $(window).ready(function(){
 	
@@ -32,13 +31,18 @@ function arrangePage() {
 
 function loadEvents() {
 	
+	$('#facebook-login').on('click', function(){
+		nextSlide(1000);
+		simulateLoad();
+	});
+	
 	$('#next-button').on('click', function(){
-		nextSlide();
+		nextSlide(1000);
 	});
 	
 }
 
-function nextSlide() {
+function nextSlide(animationDuration) {
 	var activeSlideTitle = $('#active-slide-title');
 	activeSlideTitle.animate({left: numberOfLeftSlides * cardTitleWidth}, animationDuration, 'swing');
 	activeSlideTitle.removeAttr('id');
@@ -70,10 +74,10 @@ function simulateLoad() {
 function loopLoading(increment, loadingBar) {
 	setTimeout(function(){
 		loadingBar.animate({width: '+=10%'}, 550);
-		if(increment >= 1){
+		if(increment > 1){
 			loopLoading(increment - 1, loadingBar);
 		} else {
-			nextSlide();
+			
 		}
 	}, 550);
 }
