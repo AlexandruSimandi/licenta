@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.restfb.Connection;
 import com.restfb.DefaultFacebookClient;
 import com.restfb.DefaultWebRequestor;
@@ -118,7 +120,7 @@ public class FacebookUtils {
 
 	private static boolean isDangerousPost(Post post) {
 
-		String[] foulWords = {"shit"};
+		String[] foulWords = {};
 		
 		String message = post.getMessage();
 		if (message == null) {
