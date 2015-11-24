@@ -94,7 +94,7 @@ public class FacebookUtils {
 	
 	private static boolean containsWorkThreats(Post post) {
 		
-		String[] workNouns = {"boss", "office", "work", "employer", "chief"};
+		String[] workNouns = {"boss", "office", "work", "employer", "chief", "job"};
 		//String[] negativeKeywords = {"urasc", "hate", "sleep", "somn", "nebun", "innebunesc", "crazy"};
 		
 		String message = post.getMessage();
