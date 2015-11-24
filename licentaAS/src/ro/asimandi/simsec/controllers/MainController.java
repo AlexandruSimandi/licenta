@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.restfb.types.Post;
 
-import ro.asimandi.simsec.services.FacebookUtils;
+import ro.asimandi.simsec.utils.FacebookUtils;
  
 @Controller
 public class MainController{

@@ -1,4 +1,4 @@
-package ro.asimandi.simsec.services;
+package ro.asimandi.simsec.utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,6 +14,8 @@ import com.restfb.FacebookClient.AccessToken;
 import com.restfb.Parameter;
 import com.restfb.WebRequestor;
 import com.restfb.types.Post;
+
+import edu.stanford.nlp.util.CoreMap;
 
 public class FacebookUtils {
 
@@ -92,8 +94,8 @@ public class FacebookUtils {
 	
 	private static boolean containsWorkThreats(Post post) {
 		
-		String[] workNouns = {"sef", "boss", "birou", "office", "sefu" , "seful"};
-		String[] negativeKeywords = {"urasc", "hate", "sleep", "somn", "nebun", "innebunesc", "crazy"};
+		String[] workNouns = {"boss", "office", "work", "employer", "chief"};
+		//String[] negativeKeywords = {"urasc", "hate", "sleep", "somn", "nebun", "innebunesc", "crazy"};
 		
 		String message = post.getMessage();
 		if (message == null) {
@@ -107,8 +109,9 @@ public class FacebookUtils {
 		
 		for (int i = 0; i < workNouns.length; i++) {
 			if(messageLowered.contains(workNouns[i])){
-				for (int j = 0; j < negativeKeywords.length; j++) {
-					if(messageLowered.contains(negativeKeywords[j])){
+				List<CoreMap> sentences = NlpUtils.getSentences(messageLowered);
+				for (CoreMap sentence : sentences) {
+					if(NlpUtils.getSentiment(sentence).equals("Negative")){
 						return true;
 					}
 				}

@@ -2,3 +2,23 @@
     width:840px;
     height:317px;
 }
+
+.slide {
+	position: fixed;
+}
+
+#active-slide {
+  animation: move 1s ease 1;
+  animation-fill-mode: forwards;
+}
+
+/*
+@keyframes move {
+  100% {
+     transform: translate(100px, 0px);
+  }
+}
+*/
+#someDiv {
+	position: fixed;
+}
