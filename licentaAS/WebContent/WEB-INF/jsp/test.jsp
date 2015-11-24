@@ -8,7 +8,9 @@
     <script type="text/javascript" src="/js/test.js"></script>
 </head>
 <body>
-   	<div id="container"></div>
-   	TRAFALET
+	<p class="slide">Trafalet</p>
+	
+	
+	<div id="someDiv">de ce</div>
 </body>
 </html>

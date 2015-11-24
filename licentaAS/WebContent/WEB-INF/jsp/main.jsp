@@ -51,7 +51,7 @@
        		<p>Here are the posts that might contain foul language:</p>
        		<ul>
        			<c:forEach items="${dangerousPostList}" var="post" varStatus="loop">
-       				<li><a title="${post.message}" href="${post.actions[0].link}">post${loop.index + 1} - <fmt:formatDate value="${post.createdTime}" pattern="dd-MM-yyyy HH:mm:ss" /></a></li>      			
+       				<li><a title="${post.message}" href="${post.actions[0].link}">${post.message} - <fmt:formatDate value="${post.createdTime}" pattern="dd-MM-yyyy HH:mm:ss" /></a></li>      			
        			</c:forEach>
        		</ul>
        		<p>Here are the posts that might affect professional work life:</p>
@@ -62,7 +62,10 @@
        		</ul>
        		<p>Privacy settings:</p>
        		<ul>
-       			Who can see yours posts: ${postPrivacy}
+       			<li>
+       				Who can see yours posts: ${postPrivacy}
+       			</li>
+       			
        		</ul>
        		
        		<h3>
