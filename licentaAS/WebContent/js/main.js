@@ -36,7 +36,7 @@ function loadEvents() {
 		simulateLoad();
 	});
 	
-	$('#next-button').on('click', function(){
+	$('.next-button').on('click', function(){
 		nextSlide(1000);
 	});
 	
