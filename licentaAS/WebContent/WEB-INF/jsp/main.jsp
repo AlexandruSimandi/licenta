@@ -34,11 +34,18 @@
        	<div id="active-slide" class="slide">
        		<p>This app will scan your facebook posts for potential threats to your personal and professional life.</p>
        		<p>Posts such as "I hate my boss", "I hate going to work, i am so sleepy.", "Going on a trip for a week, nobody will be home." will be detected as potentially dangerous and pointed out to the user in form of recommendations to either be deleted or hidden from public view.</p>
+<!--
 			<a href="https://www.facebook.com/dialog/oauth?
 	client_id=475736505939108&redirect_uri=http://localhost/loginSolver&
 	scope=user_posts">
 			   <img id="facebook-login" src="/img/ryt6L.png" alt="facebook login">
 			</a>
+-->
+       		<div class="next-button-container pull-right">
+       			<a class="next-button" href="https://www.facebook.com/dialog/oauth?
+	client_id=475736505939108&redirect_uri=http://localhost/loginSolver&
+	scope=user_posts"><span class="glyphicon glyphicon-arrow-right"></span></a>
+       		</div>          
        	</div>
        	<div class="slide right-slide">
        		<h2 class="slide-header">Your posts are being processed</h2>
@@ -63,7 +70,11 @@
        		<p>Here are the posts that might affect professional work life:</p>
        		<ul>
        			<c:forEach items="${workThreatList}" var="workPost" varStatus="workLoop">
-       				<li title="${workPost.message}">${workPost.message} - <fmt:formatDate value="${workPost.createdTime}" pattern="dd-MM-yyyy HH:mm:ss" /></li>
+       				<li title="${workPost.message}">
+       				    <a target="_blank" href="${workPost.actions[0].link}">
+       				        ${workPost.message} - <fmt:formatDate value="${workPost.createdTime}" pattern="dd-MM-yyyy HH:mm:ss" />
+       				    </a>
+       				 </li>
 				</c:forEach>		
        		</ul>
        		<p>Privacy settings:</p>
@@ -74,7 +85,7 @@
        		</ul>
 			
        		<div class="next-button-container pull-right">
-       			<a id="next-button" href="#"><span class="glyphicon glyphicon-arrow-right"></span></a>
+       			<a class="next-button" href="#"><span class="glyphicon glyphicon-arrow-right"></span></a>
        		</div>
        	</div>
        	<div class="slide right-slide">
@@ -86,7 +97,7 @@
        		</ul>
        		<p>Thank you very much!</p>
        		<div class="next-button-container pull-right return-button">
-       			<a id="next-button" href="/"><span class="glyphicon glyphicon-repeat"></span></a>
+       			<a class="next-button" href="/"><span class="glyphicon glyphicon-repeat"></span></a>
        		</div>
        	</div>
 </body>

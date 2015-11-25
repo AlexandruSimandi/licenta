@@ -168,15 +168,37 @@ public class FacebookUtils {
 				maxCount = privacyArrayCounter[i];
 			}
 		}
+		
+		String discoveredSetting;
 
 		Privacy[] privacyArray = Privacy.values();
 		for (int i = 0; i < privacyArray.length; i++) {
 			if (privacyArray[i].value() == maxPoz) {
-				return privacyArray[i].name();
+				discoveredSetting =  privacyArray[i].name();
+				return beautifyPrivacyString(discoveredSetting);
 			}
 		}
 
 		return null;
+	}
+	
+	
+	//TODO read custom settings for privacy
+	private static String beautifyPrivacyString(String privacy){
+		switch (privacy) {
+		case "EVERYONE":
+			return "everyone";
+		case "ALL_FRIENDS":
+			return "all your friends";
+		case "FRIENDS_OF_FRIENDS":
+			return "friends of your friends";
+		case "SELF":
+			return "only you";
+		case "CUSTOM":
+			return "custom";
+		default:
+			return null;
+		}
 	}
 
 }
