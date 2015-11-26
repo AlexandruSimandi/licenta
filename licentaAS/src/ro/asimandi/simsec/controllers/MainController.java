@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.restfb.types.Post;
 
 import ro.asimandi.simsec.utils.FacebookUtils;
+import ro.asimandi.simsec.utils.WordUtils;
  
 @Controller
 public class MainController{
@@ -23,7 +24,7 @@ public class MainController{
 	
  
 	@RequestMapping(value={"/", "/login"})
-	public String login(Model model) {
+	public String login(Model model) throws IOException {
 		model.addAttribute("screenStatus", "login");
 		return "main";
 	}
@@ -31,16 +32,22 @@ public class MainController{
 	@RequestMapping("/loginSolver")	
 	public String login(@RequestParam String code) throws IOException {
 		this.code = code;
-		allPosts =  FacebookUtils.readPosts(code);
-		dangerousPostList = FacebookUtils.getDangerousPosts(allPosts);
-		workThreatList = FacebookUtils.getWorkThreatList(allPosts);		
-		postPrivacy = FacebookUtils.determinePrivacySettingForPosts(allPosts);
-		return "redirect:/logged";
+		return "redirect:/loading";
+	}
+	
+	@RequestMapping("/loading")
+	public String loading(Model model){
+		model.addAttribute("screenStatus", "loading");
+		return "main";
 	}
 	
 	//TODO animate that thing only one time, because it would be annoying on refresh everytime
 	@RequestMapping("/logged")
-	public String scan(Model model) {
+	public String scan(Model model) throws IOException {
+		allPosts =  FacebookUtils.readPosts(code);
+		dangerousPostList = FacebookUtils.getDangerousPosts(allPosts);
+		workThreatList = FacebookUtils.getWorkThreatList(allPosts);		
+		postPrivacy = FacebookUtils.determinePrivacySettingForPosts(allPosts);
 		if(code == null){
 			System.out.println("code is null");
 			return "redirect:/login";

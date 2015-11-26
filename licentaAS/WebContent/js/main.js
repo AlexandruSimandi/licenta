@@ -31,12 +31,7 @@ function arrangePage() {
 
 function loadEvents() {
 	
-	$('#facebook-login').on('click', function(){
-		nextSlide(1000);
-		simulateLoad();
-	});
-	
-	$('.next-button').on('click', function(){
+	$('.next-button').slice(1).on('click', function(){
 		nextSlide(1000);
 	});
 	
@@ -62,22 +57,4 @@ function nextSlide(animationDuration) {
 	nextOne.removeClass('right-slide');
 	nextOne.attr('id', 'active-slide');
 	nextOne.animate({left: WINDOW_WIDTH / 2 - (cardWidth / 2)}, animationDuration, 'swing');	
-}
-
-function simulateLoad() {
-	var loadingBar = $('#loadingBar');
-	setTimeout(function() {
-		loopLoading(10, loadingBar);
-	}, 1000);
-}
-			   
-function loopLoading(increment, loadingBar) {
-	setTimeout(function(){
-		loadingBar.animate({width: '+=10%'}, 550);
-		if(increment > 1){
-			loopLoading(increment - 1, loadingBar);
-		} else {
-			
-		}
-	}, 550);
 }

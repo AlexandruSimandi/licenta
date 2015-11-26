@@ -18,7 +18,17 @@
 				nextSlide(1000);
 			});
 		</script>
-	</c:if>  
+	</c:if> 
+	<c:if test="${screenStatus == 'loading'}">  
+		<script>
+			$(window).ready(function(){
+				nextSlide(1000);
+			});
+			setTimeout(function(){
+				window.location = "logged";
+			},1000);
+		</script>
+	</c:if> 
 </head>
 
 <body>
@@ -68,7 +78,7 @@
        		</ul>
      -->
        		<p>Here are the posts that might affect professional work life:</p>
-       		<ul>
+       		<ul id="result-container">
        			<c:forEach items="${workThreatList}" var="workPost" varStatus="workLoop">
        				<li title="${workPost.message}">
        				    <a target="_blank" href="${workPost.actions[0].link}">
