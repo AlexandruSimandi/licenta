@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.stereotype.Service;
-
 import com.restfb.Connection;
 import com.restfb.DefaultFacebookClient;
 import com.restfb.DefaultWebRequestor;
@@ -80,7 +78,7 @@ public class FacebookUtils {
 
 	}
 	
-	public static List<Post> getWorkThreatList(List<Post> allPosts) {
+	public static List<Post> getWorkThreatList(List<Post> allPosts) throws IOException {
 		List<Post> workThreatList = new ArrayList<Post>();
 		
 		for (Post post : allPosts) {
@@ -92,9 +90,9 @@ public class FacebookUtils {
 				
 	}
 	
-	private static boolean containsWorkThreats(Post post) {
+	private static boolean containsWorkThreats(Post post) throws IOException {
 		
-		String[] workNouns = {"boss", "office", "work", "employer", "chief", "job"};
+//		String[] workNouns = {"boss", "office", "work", "employer", "chief", "job"};
 		//String[] negativeKeywords = {"urasc", "hate", "sleep", "somn", "nebun", "innebunesc", "crazy"};
 		
 		String message = post.getMessage();
@@ -107,8 +105,11 @@ public class FacebookUtils {
 		
 		String messageLowered = message.toLowerCase();
 		
-		for (int i = 0; i < workNouns.length; i++) {
-			if(messageLowered.contains(workNouns[i])){
+
+		List<String> workRelatedList = WordUtils.getWorkRelatedWords();
+		
+		for (String workRelatedWord : workRelatedList) {
+			if(messageLowered.contains(workRelatedWord)){
 				List<CoreMap> sentences = NlpUtils.getSentences(messageLowered);
 				for (CoreMap sentence : sentences) {
 					if(NlpUtils.getSentiment(sentence).equals("Negative")){
