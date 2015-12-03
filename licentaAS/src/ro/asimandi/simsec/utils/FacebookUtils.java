@@ -90,7 +90,7 @@ public class FacebookUtils {
 				
 	}
 	
-	private static boolean containsWorkThreats(Post post) throws IOException {
+	public static boolean containsWorkThreats(Post post) throws IOException {
 		
 //		String[] workNouns = {"boss", "office", "work", "employer", "chief", "job"};
 		//String[] negativeKeywords = {"urasc", "hate", "sleep", "somn", "nebun", "innebunesc", "crazy"};

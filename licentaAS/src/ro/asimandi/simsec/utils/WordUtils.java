@@ -19,6 +19,7 @@ import edu.mit.jwi.item.POS;
 public class WordUtils {
 	
 	private static String[] baseWords = {"boss","office","job","work","employer"};
+	private static String[] wrongWords = {"line"};
 	
 	public static List<String> getWorkRelatedWords() throws IOException{
 		
@@ -42,6 +43,10 @@ public class WordUtils {
 				}
 
 			}			
+		}
+		
+		for (int i = 0; i < wrongWords.length; i++) {
+			workRelatedWords.remove(wrongWords[i]);
 		}
 		
 		List<String> workRelatedList = new ArrayList<String>();

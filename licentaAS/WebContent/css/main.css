@@ -248,6 +248,6 @@ h1 {
 }
 
 #result-container {
-	height: 400px;
-	overflow-y: scroll;
+	max-height: 300px;
+	overflow-y: auto;
 }
