@@ -58,3 +58,5 @@ function nextSlide(animationDuration) {
 	nextOne.attr('id', 'active-slide');
 	nextOne.animate({left: WINDOW_WIDTH / 2 - (cardWidth / 2)}, animationDuration, 'swing');	
 }
+
+
