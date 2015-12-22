@@ -48,10 +48,15 @@ public class MainController{
 		dangerousPostList = FacebookUtils.getDangerousPosts(allPosts);
 		workThreatList = FacebookUtils.getWorkThreatList(allPosts);		
 		postPrivacy = FacebookUtils.determinePrivacySettingForPosts(allPosts);
+		//TODO not forget about this
+		//FacebookUtils.readAlbums(code);
 		if(code == null){
 			System.out.println("code is null");
 			return "redirect:/login";
 		} else {
+			if(workThreatList.size() > 0){
+				model.addAttribute("hasWorkThreats", true);
+			}
 			System.out.println(code);
 			model.addAttribute("dangerousPostList", dangerousPostList);
 			model.addAttribute("workThreatList", workThreatList);

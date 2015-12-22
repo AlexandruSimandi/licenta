@@ -11,6 +11,7 @@ import com.restfb.FacebookClient;
 import com.restfb.FacebookClient.AccessToken;
 import com.restfb.Parameter;
 import com.restfb.WebRequestor;
+import com.restfb.types.Album;
 import com.restfb.types.Post;
 
 import edu.stanford.nlp.util.CoreMap;
@@ -63,6 +64,23 @@ public class FacebookUtils {
 		return allPosts;
 
 	}
+	
+	public static List<Album> readAlbums(String code) throws IOException {
+		AccessToken token = getFacebookUserToken(code);
+		String accessToken = token.getAccessToken();
+		
+		FacebookClient facebookClient = new DefaultFacebookClient(accessToken);
+		ArrayList<Album> allAlbums = new ArrayList<Album>();
+		
+		Connection<Album> albumsConnection = facebookClient.fetchConnection("me/albums", Album.class, Parameter.with("fields", "name,privacy"), Parameter.with("limit",50));
+		
+		while(albumsConnection.getData().size() > 0){
+			allAlbums.addAll(albumsConnection.getData());
+			albumsConnection = facebookClient.fetchConnectionPage(albumsConnection.getNextPageUrl(), Album.class);
+		}
+		
+		return allAlbums;
+	}
 
 	public static List<Post> getDangerousPosts(List<Post> allPosts) {
 
@@ -109,7 +127,7 @@ public class FacebookUtils {
 		List<String> workRelatedList = WordUtils.getWorkRelatedWords();
 		
 		for (String workRelatedWord : workRelatedList) {
-			if(messageLowered.contains(workRelatedWord)){
+			if(messageLowered.contains(workRelatedWord)) {
 				List<CoreMap> sentences = NlpUtils.getSentences(messageLowered);
 				for (CoreMap sentence : sentences) {
 					if(NlpUtils.getSentiment(sentence).equals("Negative")){
