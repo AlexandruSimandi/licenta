@@ -54,7 +54,7 @@
        		<div class="next-button-container pull-right">
        			<a class="next-button" href="https://www.facebook.com/dialog/oauth?
 	client_id=475736505939108&redirect_uri=http://localhost/loginSolver&
-	scope=user_posts"><span class="glyphicon glyphicon-arrow-right"></span></a>
+	scope=user_posts,user_photos"><span class="glyphicon glyphicon-arrow-right"></span></a>
        		</div>          
        	</div>
        	<div class="slide right-slide">

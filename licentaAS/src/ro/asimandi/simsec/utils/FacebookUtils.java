@@ -17,6 +17,15 @@ import com.restfb.types.Post;
 import edu.stanford.nlp.util.CoreMap;
 
 public class FacebookUtils {
+	
+	private FacebookClient facebookClient;
+	
+	@SuppressWarnings("deprecation")
+	public void init(String code) throws IOException{
+		AccessToken token =  FacebookUtils.getFacebookUserToken(code);
+		String accessToken = token.getAccessToken();
+		facebookClient = new DefaultFacebookClient(accessToken);
+	}
 
 	private enum Privacy {
 		EVERYONE(1), ALL_FRIENDS(2), FRIENDS_OF_FRIENDS(3), SELF(4), CUSTOM(5);
@@ -45,16 +54,11 @@ public class FacebookUtils {
 		return DefaultFacebookClient.AccessToken.fromQueryString(accessTokenResponse.getBody());
 	}
 
-	public static List<Post> readPosts(String code) throws IOException {
-		AccessToken token = getFacebookUserToken(code);
-		String accessToken = token.getAccessToken();
-		// Date expires = token.getExpires();
-		@SuppressWarnings("deprecation")
-		FacebookClient facebookClient = new DefaultFacebookClient(accessToken);
+	public List<Post> readPosts() throws IOException {
 		ArrayList<Post> allPosts = new ArrayList<Post>();
 
 		Connection<Post> myFeed = facebookClient.fetchConnection("me/feed", Post.class,
-				Parameter.with("fields", "privacy,message,story,actions,created_time"), Parameter.with("limit", 999));
+				Parameter.with("fields", "privacy,message,story,actions,created_time,object_id"), Parameter.with("limit", 999));
 
 		while (myFeed.getData().size() > 0) {
 			allPosts.addAll(myFeed.getData());
@@ -65,25 +69,43 @@ public class FacebookUtils {
 
 	}
 	
-	public static List<Album> readAlbums(String code) throws IOException {
-		AccessToken token = getFacebookUserToken(code);
-		String accessToken = token.getAccessToken();
+//	public List<Album> readAlbums() throws IOException {
+//		ArrayList<Album> allAlbums = new ArrayList<Album>();
+//
+//		Connection<Album> albumsConnection = facebookClient.fetchConnection("me/albums", Album.class, Parameter.with("fields", "name,privacy,object_id"), Parameter.with("limit",50));
+//		
+//		while(albumsConnection.getData().size() > 0){
+//			allAlbums.addAll(albumsConnection.getData());
+//			albumsConnection = facebookClient.fetchConnectionPage(albumsConnection.getNextPageUrl(), Album.class);
+//		}
+//		//////////////
+//		for(Album album: allAlbums){
+//			System.out.println(album.getName() + "  " + album.getPrivacy());
+//		}
+//		////////////
+//		return allAlbums;
+//	}
+
+	public static List<Post> getPostContainingPhotosWithBadPrivacy(List<Post> allPosts){
+		List<Post> photosWithBadPrivacyList = new ArrayList<Post>();
 		
-		FacebookClient facebookClient = new DefaultFacebookClient(accessToken);
-		ArrayList<Album> allAlbums = new ArrayList<Album>();
-		
-		Connection<Album> albumsConnection = facebookClient.fetchConnection("me/albums", Album.class, Parameter.with("fields", "name,privacy"), Parameter.with("limit",50));
-		
-		while(albumsConnection.getData().size() > 0){
-			allAlbums.addAll(albumsConnection.getData());
-			albumsConnection = facebookClient.fetchConnectionPage(albumsConnection.getNextPageUrl(), Album.class);
+		for (Post post : allPosts) {
+			if(post.getObjectId() != null){
+				if(post.getPrivacy().getValue().equals("EVERYONE")){
+					photosWithBadPrivacyList.add(post);
+				}
+			}
 		}
 		
-		return allAlbums;
+		for (Post post : photosWithBadPrivacyList) {
+			System.out.println(post.getStory() + " " + post.getId());
+		}
+		
+		
+		return photosWithBadPrivacyList;
 	}
-
+	
 	public static List<Post> getDangerousPosts(List<Post> allPosts) {
-
 		List<Post> dangerousPostList = new ArrayList<Post>();
 
 		for (Post post : allPosts) {

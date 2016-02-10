@@ -18,6 +18,7 @@ public class MainController{
 	
 	private String code;
 	private String postPrivacy;
+	private FacebookUtils facebookUtils;
 	private List<Post> allPosts;
 	private List<Post> dangerousPostList;
 	private List<Post> workThreatList;
@@ -44,12 +45,17 @@ public class MainController{
 	//TODO animate that thing only one time, because it would be annoying on refresh everytime
 	@RequestMapping("/logged")
 	public String scan(Model model) throws IOException {
-		allPosts =  FacebookUtils.readPosts(code);
+		facebookUtils = new FacebookUtils();
+		facebookUtils.init(code);
+		
+		allPosts =  facebookUtils.readPosts();
 		dangerousPostList = FacebookUtils.getDangerousPosts(allPosts);
 		workThreatList = FacebookUtils.getWorkThreatList(allPosts);		
 		postPrivacy = FacebookUtils.determinePrivacySettingForPosts(allPosts);
+
+		FacebookUtils.getPostContainingPhotosWithBadPrivacy(allPosts);
 		//TODO not forget about this
-		//FacebookUtils.readAlbums(code);
+		//facebookUtils.readAlbums();
 		if(code == null){
 			System.out.println("code is null");
 			return "redirect:/login";
