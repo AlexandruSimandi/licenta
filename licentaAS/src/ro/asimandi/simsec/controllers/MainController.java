@@ -22,6 +22,7 @@ public class MainController{
 	private List<Post> allPosts;
 	private List<Post> dangerousPostList;
 	private List<Post> workThreatList;
+	private List<Post> photoPostList;
 	
  
 	@RequestMapping(value={"/", "/login"})
@@ -53,7 +54,7 @@ public class MainController{
 		workThreatList = FacebookUtils.getWorkThreatList(allPosts);		
 		postPrivacy = FacebookUtils.determinePrivacySettingForPosts(allPosts);
 
-		FacebookUtils.getPostContainingPhotosWithBadPrivacy(allPosts);
+		photoPostList = FacebookUtils.getPostsContainingPhotosWithBadPrivacy(allPosts);
 		//TODO not forget about this
 		//facebookUtils.readAlbums();
 		if(code == null){
@@ -68,6 +69,7 @@ public class MainController{
 			model.addAttribute("workThreatList", workThreatList);
 			model.addAttribute("postPrivacy", postPrivacy);
 			model.addAttribute("screenStatus", "logged");
+			model.addAttribute("photoPostList", photoPostList);
 			return "main";	
 		}
 	}

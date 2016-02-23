@@ -86,7 +86,7 @@ public class FacebookUtils {
 //		return allAlbums;
 //	}
 
-	public static List<Post> getPostContainingPhotosWithBadPrivacy(List<Post> allPosts){
+	public static List<Post> getPostsContainingPhotosWithBadPrivacy(List<Post> allPosts){
 		List<Post> photosWithBadPrivacyList = new ArrayList<Post>();
 		
 		for (Post post : allPosts) {

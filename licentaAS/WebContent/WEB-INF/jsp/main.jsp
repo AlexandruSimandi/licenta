@@ -93,6 +93,17 @@
        				Who can see yours posts: ${postPrivacy}
        			</li>
        		</ul>
+       		
+       		<p>Photos seen by everyone (current cover and profile picture cannot have privacy changed)</p>
+       		<ul>
+       			<c:forEach items="${photoPostList}" var="photoPost">
+       				<li title="${photoPost.message}">
+       				    <a target="_blank" href="${photoPost.actions[0].link}">
+       				        ${photoPost.message} - <fmt:formatDate value="${photoPost.createdTime}" pattern="dd-MM-yyyy HH:mm:ss" />
+       				    </a>
+       				 </li>
+       			</c:forEach>
+       		</ul>
 			
        		<div class="next-button-container pull-right">
        			<a class="next-button" href="#"><span class="glyphicon glyphicon-arrow-right"></span></a>
