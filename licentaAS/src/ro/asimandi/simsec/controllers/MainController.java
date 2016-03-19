@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.restfb.types.Post;
 
 import ro.asimandi.simsec.utils.FacebookUtils;
+import ro.asimandi.simsec.utils.Pair;
 import ro.asimandi.simsec.utils.WordUtils;
  
 @Controller
@@ -23,6 +24,7 @@ public class MainController{
 	private List<Post> dangerousPostList;
 	private List<Post> workThreatList;
 	private List<Post> photoPostList;
+	private List<Pair<Post, Integer>> postsWithLocation;
 	
  
 	@RequestMapping(value={"/", "/login"})
@@ -53,8 +55,8 @@ public class MainController{
 		dangerousPostList = FacebookUtils.getDangerousPosts(allPosts);
 		workThreatList = FacebookUtils.getWorkThreatList(allPosts);		
 		postPrivacy = FacebookUtils.determinePrivacySettingForPosts(allPosts);
-
 		photoPostList = FacebookUtils.getPostsContainingPhotosWithBadPrivacy(allPosts);
+		postsWithLocation =  FacebookUtils.getClusteredLocations(allPosts, 20);
 		//TODO not forget about this
 		//facebookUtils.readAlbums();
 		if(code == null){
@@ -70,6 +72,7 @@ public class MainController{
 			model.addAttribute("postPrivacy", postPrivacy);
 			model.addAttribute("screenStatus", "logged");
 			model.addAttribute("photoPostList", photoPostList);
+			model.addAttribute("postsWithLocation", postsWithLocation);
 			return "main";	
 		}
 	}

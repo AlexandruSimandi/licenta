@@ -2,13 +2,40 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <div class="slide right-slide">
-	<!--    		<p>Here are the posts that might contain foul language:</p>
-       		<ul>
-       			<c:forEach items="${dangerousPostList}" var="post" varStatus="loop">
-       				<li><a title="${post.message}" href="${post.actions[0].link}">${post.message} - <fmt:formatDate value="${post.createdTime}" pattern="dd-MM-yyyy HH:mm:ss" /></a></li>      			
-       			</c:forEach>
-       		</ul>
-     -->
+	<script>
+		var markers = new Array();
+		var id;
+		var longitude;
+		var latitude;
+		var markerEntity;
+		
+		
+		var infoWindowContent = new Array();
+		var infoEntity;
+		var infoEntityString;
+		
+		<c:forEach items="${postsWithLocation}" var="locationPost">
+			markerEntity = new Array();
+			id = '${locationPost.fst.message}';
+			longitude = ${locationPost.fst.place.location.longitude};
+			latitude = ${locationPost.fst.place.location.latitude};
+			markerEntity.push(id);
+			markerEntity.push(latitude);
+			markerEntity.push(longitude);
+			markers.push(markerEntity);
+			
+			infoEntity = new Array();
+			infoEntityString = '<div class="info_content">' +
+									'<h3>${locationPost.fst.message}</h3>' +
+									'<p><a href="${locationPost.fst.actions[0].link}" target="_blank">You were here ${locationPost.snd} times</a></p>' +
+								'</div';
+			infoEntity.push(infoEntityString);
+			infoWindowContent.push(infoEntity);
+			
+		</c:forEach>
+	                         
+	</script>
+
 	<p>Here are the posts that might affect professional work life:</p>
 	<ul id="result-container">
 		<c:forEach items="${workThreatList}" var="workPost"
@@ -34,6 +61,10 @@
 			</a></li>
 		</c:forEach>
 	</ul>
+	
+	<div id="map_wrapper">
+    	<div id="map_canvas" class="mapping"></div>
+	</div>
 
 	<div class="next-button-container pull-right">
 		<a class="next-button" href="#"><span
