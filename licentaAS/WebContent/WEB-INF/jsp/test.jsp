@@ -8,6 +8,14 @@
     <script type="text/javascript" src="/js/test.js"></script>
 </head>
 <body>
-   	<div id="container"></div>
+	<div class="loading-container">
+		<div class="circle circle1">
+			<div class="circle circle2">
+				<div class="circle circle3">
+					<div class="circle circle4"></div>
+				</div>
+			</div>			
+		</div>
+	</div>
 </body>
 </html>
