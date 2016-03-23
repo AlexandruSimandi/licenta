@@ -22,5 +22,6 @@
 	<mvc:resources mapping="/css/**" location="/css/" order="-1"/>
 	<mvc:resources mapping="/img/**" location="/img/" order="-1"/>
 	<mvc:resources mapping="/js/**" location="/js/" order="-1"/>
+	<mvc:resources mapping="/fonts/**" location="/fonts/" order="-1"/>
 	
 </beans>
