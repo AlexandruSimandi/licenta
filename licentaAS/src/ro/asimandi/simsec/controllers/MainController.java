@@ -29,8 +29,8 @@ public class MainController{
  
 	@RequestMapping(value={"/", "/login"})
 	public String login(Model model) throws IOException {
-		model.addAttribute("screenStatus", "login");
-		return "main";
+//		model.addAttribute("screenStatus", "login");
+		return "login";
 	}
 	
 	@RequestMapping("/loginSolver")	
