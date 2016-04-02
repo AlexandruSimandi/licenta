@@ -31,7 +31,7 @@
 				
 				infoEntity = new Array();
 				infoEntityString = '<div class="info_content">' +
-										'<h3>${locationPost.fst.message}</h3>' +
+										'<h5>${locationPost.fst.message}</h5>' +
 										'<p><a href="${locationPost.fst.actions[0].link}" target="_blank">You were here ${locationPost.snd} times</a></p>' +
 									'</div';
 				infoEntity.push(infoEntityString);
@@ -42,7 +42,7 @@
 		</script>
 		<style>
 			#map_wrapper {
-			    height: 600px;
+			   height: 30em;
 			}
 			
 			#map_canvas {
@@ -62,45 +62,57 @@
 			<li class="tab col s3"><a class="black-text" href="#test5">Privacy
 					Settings</a></li>
 		</ul>
-				<div class="row">
-					<div class="col s12 container"></div>
-					<div id="test1" class="col s12">
-						<h3>some nice stats</h3>
-						<p>Privacy settings:</p>
-						<ul>
-							<li>Who can see yours posts: ${postPrivacy}</li>
-						</ul>
+			<div class="row">
+				<div class="col s12 container"></div>
+				<div id="test1" class="col s12">
+					<h3>some nice stats</h3>
+				</div>
+				<div id="test2" class="col s12">
+					<div id="map_wrapper">
+						<div id="map_canvas" class="mapping"></div>
 					</div>
-					<div id="test2" class="col s12">
-						<div id="map_wrapper">
-							<div id="map_canvas" class="mapping"></div>
-						</div>
-					</div>
-					<div id="test3" class="col s12">
-						<p>Here are the posts that might affect professional work life:</p>
-						<ul id="result-container">
-							<c:forEach items="${workThreatList}" var="workPost"
-								varStatus="workLoop">
-								<li title="${workPost.message}"><a target="_blank"
-									href="${workPost.actions[0].link}"> ${workPost.message} - <fmt:formatDate
-											value="${workPost.createdTime}" pattern="dd-MM-yyyy HH:mm:ss" />
-								</a></li>
-							</c:forEach>
-						</ul>
-					</div>
-					<div id="test4" class="col s12">
-						<p>Photos seen by everyone (current cover and profile picture
-							cannot have privacy changed)</p>
-						<ul>
-							<c:forEach items="${photoPostList}" var="photoPost">
-								<li title="${photoPost.message}"><a target="_blank"
-									href="${photoPost.actions[0].link}"> ${photoPost.message} - <fmt:formatDate
-											value="${photoPost.createdTime}" pattern="dd-MM-yyyy HH:mm:ss" />
-								</a></li>
-							</c:forEach>
-						</ul>
-					</div>
-		</div>
+				</div>
+				<div id="test3" class="col s12">
+				<table class="highlight">
+					<thead>
+						<tr>
+							<th data-field="id">Date</th>
+							<th data-field="name">Description</th>
+							<th data-field="price">Privacy</th>
+						</tr>
+					</thead>
+
+					<tbody>
+						<c:forEach items="${workThreatList}" var="workPost"
+							varStatus="workLoop">
+							<tr>
+								<td><a target="_blank" href="${workPost.actions[0].link}"><fmt:formatDate value="${workPost.createdTime}"
+										pattern="dd-MM-yyyy HH:mm:ss" /></a></td>
+								<td>${workPost.message}</td>
+								<td>${workPost.privacy.value}</td>
+							</tr>						
+						</c:forEach>
+					</tbody>
+				</table>
+				</div>
+				<div id="test4" class="col s12">
+					<p>Photos seen by everyone (current cover and profile picture
+						cannot have privacy changed)</p>
+					<ul>
+						<c:forEach items="${photoPostList}" var="photoPost">
+							<li title="${photoPost.message}"><a target="_blank"
+								href="${photoPost.actions[0].link}"> ${photoPost.message} - <fmt:formatDate
+										value="${photoPost.createdTime}" pattern="dd-MM-yyyy HH:mm:ss" />
+							</a></li>
+						</c:forEach>
+					</ul>
+				</div>
+				<div id="test5" class="col s12">
+					<ul>
+						<li>Who can see yours posts: ${postPrivacy}</li>
+					</ul>
+				</div>
+			</div>
 		</main>
 	</layout:put>
 </layout:extends>
