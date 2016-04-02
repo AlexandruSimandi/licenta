@@ -14,8 +14,8 @@
 		<script src="js/index.js"></script>
 	</head>
     		<header>
-			<nav class="indigo darken-4 top-nav z-depth-2">
-				<ul id="nav-mobile" class="side-nav fixed z-depth-2">
+			<nav class="indigo darken-4 top-nav">
+				<ul id="nav-mobile" class="side-nav fixed z-depth-1">
 	<!--				maybe throw a toast telling already logged in or modal to relog-->
 					<li class="${screenStatus == 'login' ? 'active' : ''}"><a class="waves-effect waves-orange ${screenStatus == 'login' ? 'white-text' : ''}" href="login"><i class="material-icons left">perm_identity</i>Login</a></li>
 					<li class="${screenStatus == 'results' ? 'active' : ''}"><a class="waves-effect waves-orange ${screenStatus == 'results' ? 'white-text' : ''}" href="results"><i class="material-icons left">assignment</i>Results</a></li>
@@ -25,7 +25,7 @@
 					<div class="container">
 						<a href="#" data-activates="nav-mobile" class="button-collapse top-nav full hide-on-large-only"><i class="mdi-navigation-menu"></i></a>
 						<a href="#" class="brand-logo center">
-							<h1>SimSec</h1>
+							<h3>SimSec</h3>
 						</a>
 					</div>
 				</div>
