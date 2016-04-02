@@ -33,6 +33,12 @@
 			<artifactId>spring-web</artifactId>
 			<version>4.1.1.RELEASE</version>
 		</dependency>
+		<dependency>
+		    <groupId>kr.pe.kwonnam.jsp</groupId>
+		    <artifactId>jsp-template-inheritance</artifactId>
+		    <version>0.3.RELEASE</version>
+		    <scope>compile</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>javax.servlet</groupId>
