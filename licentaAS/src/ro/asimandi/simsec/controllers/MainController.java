@@ -1,10 +1,12 @@
 package ro.asimandi.simsec.controllers;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -26,6 +28,7 @@ public class MainController {
 	private List<Post> workThreatList;
 	private List<Post> photoPostList;
 	private List<Pair<Post, Integer>> postsWithLocation;
+	private List<ArrayList<Post>> groupedPostsByMonth;
 
 	@RequestMapping(value = { "/", "/login" })
 	public String login(Model model) throws IOException {
@@ -63,18 +66,24 @@ public class MainController {
 			postPrivacy = FacebookUtils.determinePrivacySettingForPosts(allPosts);
 			photoPostList = FacebookUtils.getPostsContainingPhotosWithBadPrivacy(allPosts);
 			postsWithLocation = FacebookUtils.getClusteredLocations(allPosts, 20);
+			groupedPostsByMonth = FacebookUtils.groupPostsByMonth(allPosts);
+//			facebookUtils.testSomething();
+//			System.out.println(code);
 		}
-
+//		facebookUtils.testSomething();
 		if (workThreatList.size() > 0) {
 			model.addAttribute("hasWorkThreats", true);
 		}
-		System.out.println(code);
+		
 		model.addAttribute("dangerousPostList", dangerousPostList);
 		model.addAttribute("workThreatList", workThreatList);
 		model.addAttribute("postPrivacy", postPrivacy);
 		model.addAttribute("photoPostList", photoPostList);
 		model.addAttribute("postsWithLocation", postsWithLocation);
 		model.addAttribute("screenStatus", "results");
+		model.addAttribute("postsCount", allPosts.size());
+		model.addAttribute("groupedPostsByMonth", groupedPostsByMonth);
+		model.addAttribute("dangerousPostsCount", workThreatList.size());
 		return "results";
 
 	}
