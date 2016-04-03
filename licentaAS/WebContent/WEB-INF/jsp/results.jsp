@@ -7,6 +7,7 @@
 	<layout:put block="header" type="REPLACE"></layout:put>
 	<layout:put block="contents">
 		<script src="js/main.js"></script>
+		<script src="js/Chart.js"></script>
 		<script>
 			var markers = new Array();
 			var id;
@@ -42,7 +43,7 @@
 		</script>
 		<style>
 			#map_wrapper {
-			   height: 30em;
+			   height: 80vh;
 			}
 			
 			#map_canvas {
@@ -65,7 +66,7 @@
 			<div class="row">
 				<div class="col s12 container"></div>
 				<div id="test1" class="col s12">
-					<h3>some nice stats</h3>
+					<jsp:include page="include/results/stats.jsp"/>
 				</div>
 				<div id="test2" class="col s12">
 					<div id="map_wrapper">
