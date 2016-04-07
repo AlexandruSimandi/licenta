@@ -2,6 +2,10 @@ package ro.asimandi.simsec.utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -21,11 +25,13 @@ import edu.stanford.nlp.util.CoreMap;
 public class FacebookUtils {
 
 	private FacebookClient facebookClient;
+	private String tokenel;
 
 	@SuppressWarnings("deprecation")
 	public void init(String code) throws IOException {
 		AccessToken token = FacebookUtils.getFacebookUserToken(code);
 		String accessToken = token.getAccessToken();
+		tokenel = accessToken;
 		facebookClient = new DefaultFacebookClient(accessToken);
 	}
 
@@ -248,6 +254,30 @@ public class FacebookUtils {
 		// }
 		return false;
 	}
+	
+    private static int getMonthOfYear(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        return cal.get(Calendar.MONTH);
+    }
+	
+	public static List<ArrayList<Post>> groupPostsByMonth(List<Post> posts){
+		ArrayList<Post> clonedPosts = new ArrayList<Post>(posts);
+		Collections.reverse(clonedPosts);
+		
+		List<ArrayList<Post>> groupedPosts = new ArrayList<ArrayList<Post>>();
+		
+		int currentMonth = -1;
+		for(Post post: clonedPosts){
+			int postMonth = getMonthOfYear(post.getCreatedTime());
+			if(currentMonth != postMonth){
+				groupedPosts.add(new ArrayList<Post>());
+				currentMonth = postMonth;
+			}
+			groupedPosts.get(groupedPosts.size() - 1).add(post);
+		}
+		return groupedPosts;
+	}
 
 	public static String determinePrivacySettingForPosts(List<Post> allPosts) {
 		final int POST_NUMBER_CHECK_PRIVACY = 10;
@@ -255,7 +285,6 @@ public class FacebookUtils {
 
 		int loopCount = Math.min(POST_NUMBER_CHECK_PRIVACY, postCount);
 		int privacyArrayCounter[] = new int[6];
-
 		for (int i = 0; i < loopCount; i++) {
 			String privacy = allPosts.get(i).getPrivacy().getValue();
 			if (privacy != null && !privacy.equals("")) {
@@ -286,7 +315,13 @@ public class FacebookUtils {
 
 		return null;
 	}
-
+	
+	public void testSomething(){
+		new DefaultFacebookClient(tokenel);
+		System.out.println(tokenel);
+	}
+	
+	
 	
 	// http://stackoverflow.com/questions/3694380/calculating-distance-between-two-points-using-latitude-longitude-what-am-i-doi
 	public static double distance(double lat1, double lng1, double lat2, double lng2) {
@@ -326,5 +361,6 @@ public class FacebookUtils {
 			return null;
 		}
 	}
-
+	
+	
 }
