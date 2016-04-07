@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -12,12 +13,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.restfb.types.Post;
 
+import ro.asimandi.simsec.DAO.UserDAO;
+import ro.asimandi.simsec.models.User;
 import ro.asimandi.simsec.utils.FacebookUtils;
 import ro.asimandi.simsec.utils.Pair;
 import ro.asimandi.simsec.utils.WordUtils;
 
 @Controller
 public class MainController {
+	
+	@Autowired
+	private UserDAO userDao;
 
 	private String code;
 	private boolean usedCode = false;
@@ -33,6 +39,7 @@ public class MainController {
 	@RequestMapping(value = { "/", "/login" })
 	public String login(Model model) throws IOException {
 		model.addAttribute("screenStatus", "login");
+		System.out.println(userDao.listUser().get(0).getFirst_name());
 		return "login";
 	}
 
