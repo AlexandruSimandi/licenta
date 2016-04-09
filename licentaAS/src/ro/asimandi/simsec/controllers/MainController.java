@@ -7,12 +7,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.restfb.types.Post;
 
@@ -24,23 +27,14 @@ import ro.asimandi.simsec.utils.Pair;
 import ro.asimandi.simsec.utils.WordUtils;
 
 @Controller
+@SessionAttributes({ "code", "usedCode", "postPrivacy", "dangerousPostList", "workThreatList", "photoPostList",
+		"postsWithLocation", "groupedPostsByMonth" })
 public class MainController {
-	
+
 	@Autowired
 	private UserDAO userDao;
 	@Autowired
 	private PostDAO postDao;
-
-	private String code;
-	private boolean usedCode = false;
-	private String postPrivacy;
-	private FacebookUtils facebookUtils;
-	private List<Post> allPosts;
-	private List<Post> dangerousPostList;
-	private List<Post> workThreatList;
-	private List<Post> photoPostList;
-	private List<Pair<Post, Integer>> postsWithLocation;
-	private List<ArrayList<Post>> groupedPostsByMonth;
 
 	@RequestMapping(value = { "/", "/login" })
 	public String login(Model model) throws IOException {
@@ -50,54 +44,46 @@ public class MainController {
 
 	@RequestMapping("/loginSolver")
 	public String login(@RequestParam String code, Model model) throws IOException {
-		this.code = code;
+		model.addAttribute("code", code);
 		model.addAttribute("screenStatus", "loading");
 		return "loading";
 	}
 
-	@RequestMapping("/loading")
-	public String loading(Model model) {
-		return "main";
-	}
-
-	// TODO animate that thing only one time, because it would be annoying on
-	// refresh everytime
 	@RequestMapping("/results")
-	public String scan(Model model) throws IOException {
-		if (code == null) {
+	public String scan(HttpSession session, Model model) throws IOException {
+		if (session.getAttribute("code") == null) {
 			System.out.println("code is null");
 			return "redirect:/login";
-		} else if (!usedCode) {
-			usedCode = true;
-			facebookUtils = new FacebookUtils();
-			facebookUtils.init(code);
+		} else if (session.getAttribute("usedCode") == null) {
+			model.addAttribute("usedCode", true);
+			FacebookUtils facebookUtils = new FacebookUtils();
+			facebookUtils.init(session.getAttribute("code").toString());
 
-			allPosts = facebookUtils.readPosts();
+			List<Post> allPosts = facebookUtils.readPosts();
 			postDao.addPostsFb(allPosts);
+
+			List<Post> dangerousPostList = FacebookUtils.getDangerousPosts(allPosts);
+			List<Post> workThreatList = FacebookUtils.getWorkThreatList(allPosts);
+			String postPrivacy = FacebookUtils.determinePrivacySettingForPosts(allPosts);
+			List<Post> photoPostList = FacebookUtils.getPostsContainingPhotosWithBadPrivacy(allPosts);
+			List<Pair<Post, Integer>> postsWithLocation = FacebookUtils.getClusteredLocations(allPosts, 20);
+			List<ArrayList<Post>> groupedPostsByMonth = FacebookUtils.groupPostsByMonth(allPosts);
 			
-			dangerousPostList = FacebookUtils.getDangerousPosts(allPosts);
-			workThreatList = FacebookUtils.getWorkThreatList(allPosts);
-			postPrivacy = FacebookUtils.determinePrivacySettingForPosts(allPosts);
-			photoPostList = FacebookUtils.getPostsContainingPhotosWithBadPrivacy(allPosts);
-			postsWithLocation = FacebookUtils.getClusteredLocations(allPosts, 20);
-			groupedPostsByMonth = FacebookUtils.groupPostsByMonth(allPosts);
-//			facebookUtils.testSomething();
-//			System.out.println(code);
+			model.addAttribute("dangerousPostList", dangerousPostList);
+			model.addAttribute("workThreatList", workThreatList);
+			model.addAttribute("postPrivacy", postPrivacy);
+			model.addAttribute("photoPostList", photoPostList);
+			model.addAttribute("postsWithLocation", postsWithLocation);
+			//mby delete this
+			model.addAttribute("screenStatus", "results");
+			model.addAttribute("postsCount", allPosts.size());
+			model.addAttribute("groupedPostsByMonth", groupedPostsByMonth);
+			model.addAttribute("dangerousPostsCount", workThreatList.size());
+			if (workThreatList.size() > 0) {
+				model.addAttribute("hasWorkThreats", true);
+			}
 		}
-//		facebookUtils.testSomething();
-		if (workThreatList.size() > 0) {
-			model.addAttribute("hasWorkThreats", true);
-		}
-		
-		model.addAttribute("dangerousPostList", dangerousPostList);
-		model.addAttribute("workThreatList", workThreatList);
-		model.addAttribute("postPrivacy", postPrivacy);
-		model.addAttribute("photoPostList", photoPostList);
-		model.addAttribute("postsWithLocation", postsWithLocation);
-		model.addAttribute("screenStatus", "results");
-		model.addAttribute("postsCount", allPosts.size());
-		model.addAttribute("groupedPostsByMonth", groupedPostsByMonth);
-		model.addAttribute("dangerousPostsCount", workThreatList.size());
+
 		return "results";
 
 	}
