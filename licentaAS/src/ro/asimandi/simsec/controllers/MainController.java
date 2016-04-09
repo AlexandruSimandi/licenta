@@ -2,7 +2,10 @@ package ro.asimandi.simsec.controllers;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.restfb.types.Post;
 
+import ro.asimandi.simsec.DAO.PostDAO;
 import ro.asimandi.simsec.DAO.UserDAO;
 import ro.asimandi.simsec.models.User;
 import ro.asimandi.simsec.utils.FacebookUtils;
@@ -24,6 +28,8 @@ public class MainController {
 	
 	@Autowired
 	private UserDAO userDao;
+	@Autowired
+	private PostDAO postDao;
 
 	private String code;
 	private boolean usedCode = false;
@@ -39,7 +45,6 @@ public class MainController {
 	@RequestMapping(value = { "/", "/login" })
 	public String login(Model model) throws IOException {
 		model.addAttribute("screenStatus", "login");
-		System.out.println(userDao.listUser().get(0).getFirst_name());
 		return "login";
 	}
 
@@ -68,6 +73,8 @@ public class MainController {
 			facebookUtils.init(code);
 
 			allPosts = facebookUtils.readPosts();
+			postDao.addPostsFb(allPosts);
+			
 			dangerousPostList = FacebookUtils.getDangerousPosts(allPosts);
 			workThreatList = FacebookUtils.getWorkThreatList(allPosts);
 			postPrivacy = FacebookUtils.determinePrivacySettingForPosts(allPosts);
