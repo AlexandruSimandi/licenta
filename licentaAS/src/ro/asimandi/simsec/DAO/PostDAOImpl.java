@@ -51,6 +51,16 @@ public class PostDAOImpl implements PostDAO {
 	
 	@Override
 	public void addPostsFb(List<com.restfb.types.Post> posts) {
+		HashMap<String, Boolean> hash = new HashMap<String, Boolean>();
+		for (int i = 0; i < posts.size(); i++) {
+			if(hash.containsKey(posts.get(i).getId())){
+				posts.remove(i);
+				i--;
+			} else {
+				hash.put(posts.get(i).getId(), true);
+			}
+		}
+		
 		List<Post> modelPosts = new ArrayList<Post>();
 		for (com.restfb.types.Post post : posts) {
 			Post modelPost = new Post();
@@ -71,9 +81,7 @@ public class PostDAOImpl implements PostDAO {
 			modelPost.setStory(post.getStory());
 			modelPosts.add(modelPost);
 		}
-		for (int i = 0; i < modelPosts.size(); i += 1) {
-			this.addPosts(modelPosts.subList(i, Math.min(i + 1, modelPosts.size())));
-		}
+		this.addPosts(modelPosts);
 	}
 	
 
@@ -81,8 +89,4 @@ public class PostDAOImpl implements PostDAO {
 	public List<Post> listPost() {
 		return mongoTemplate.findAll(Post.class, "post");
 	}
-
-
-
-
 }
