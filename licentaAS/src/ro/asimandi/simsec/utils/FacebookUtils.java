@@ -241,6 +241,23 @@ public class FacebookUtils {
 		}
 		return groupedPosts;
 	}
+	
+	public static List<Pair<String, Integer>> countPrivacy(List<Post> allPosts){
+		HashMap<String, Integer> hash = new HashMap<String, Integer>();
+		for (Post post : allPosts) {
+			if(hash.get(post.getPrivacy()) != null){
+				hash.put(post.getPrivacy(), hash.remove(post.getPrivacy()) + 1);
+			} else hash.put(post.getPrivacy(), 1);
+		}
+		
+		List<Pair<String, Integer>> privacyList = new ArrayList<Pair<String, Integer>>();
+		for (String privacy : hash.keySet()) {
+			privacyList.add(new Pair<String, Integer>(privacy.equals("")?"OTHER":privacy,hash.get(privacy)));
+			
+		}
+		
+		return privacyList;
+	}
 
 	public static String determinePrivacySettingForPosts(List<Post> allPosts) {
 		final int POST_NUMBER_CHECK_PRIVACY = 10;

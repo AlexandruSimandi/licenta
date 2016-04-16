@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.restfb.experimental.api.Facebook;
 
 import ro.asimandi.simsec.DAO.PostDAO;
 import ro.asimandi.simsec.DAO.UserDAO;
@@ -22,8 +23,8 @@ import ro.asimandi.simsec.utils.FacebookUtils;
 import ro.asimandi.simsec.utils.Pair;
 
 @Controller
-@SessionAttributes({ "code", "usedCode", "postPrivacy", "dangerousPostList", "workThreatList", "photoPostList",
-		"postsWithLocation", "groupedPostsByMonth", "groupedPostsWithLocationByMonth", "groupedPostsWithPhotoByMonth" })
+@SessionAttributes({"user", "code", "usedCode", "postPrivacy", "dangerousPostList", "workThreatList", "photoPostList",
+		"postsWithLocation", "groupedPostsByMonth", "groupedPostsWithLocationByMonth", "groupedPostsWithPhotoByMonth", "privacyCount"})
 public class MainController {
 
 	@Autowired
@@ -68,6 +69,7 @@ public class MainController {
 			List<ArrayList<Post>> groupedPostsByMonth = FacebookUtils.groupPostsByMonth(databasePosts);
 			List<ArrayList<Post>> groupedPostsWithLocationByMonth = FacebookUtils.groupPostsWithLocationByMonth(databasePosts);
 			List<ArrayList<Post>> groupedPostsWithPhotoByMonth = FacebookUtils.groupPostsWithPhotoByMonth(databasePosts);
+			List<Pair<String, Integer>> privacyCount = FacebookUtils.countPrivacy(databasePosts);
 			
 			model.addAttribute("workThreatList", workThreatList);
 			model.addAttribute("postPrivacy", postPrivacy);
@@ -79,6 +81,8 @@ public class MainController {
 			model.addAttribute("groupedPostsWithLocationByMonth", groupedPostsWithLocationByMonth);
 			model.addAttribute("groupedPostsWithPhotoByMonth", groupedPostsWithPhotoByMonth);
 			model.addAttribute("dangerousPostsCount", workThreatList.size());
+			model.addAttribute("user", user);
+			model.addAttribute("privacyCount", privacyCount);
 			
 			if (workThreatList.size() > 0) {
 				model.addAttribute("hasWorkThreats", true);
