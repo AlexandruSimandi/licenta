@@ -1,4 +1,3 @@
-var datah;
 $(document).ready(function(){
 	var chart = c3.generate({
 	    bindto: '#chart',

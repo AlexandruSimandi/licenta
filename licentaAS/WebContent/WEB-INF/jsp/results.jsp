@@ -100,21 +100,50 @@
 				</table>
 				</div>
 				<div id="test4" class="col s12">
-					<p>Photos seen by everyone (current cover and profile picture
-						cannot have privacy changed)</p>
-					<ul>
+				<table class="highlight">
+					<thead>
+						<tr>
+							<th data-field="id">Date</th>
+							<th data-field="name">Description</th>
+						</tr>
+					</thead>
+
+					<tbody>
 						<c:forEach items="${photoPostList}" var="photoPost">
-							<li title="${photoPost.message}"><a target="_blank"
-								href="${photoPost.link}"> ${photoPost.message} - <fmt:formatDate
+							<tr>
+								<td><a target="_blank"
+								href="https://www.facebook.com/${user.id}/posts/${photoPost.object_id}"><fmt:formatDate
 										value="${photoPost.created_time}" pattern="dd-MM-yyyy HH:mm:ss" />
-							</a></li>
+								</a></td>
+								<td>${photoPost.message == null ? photoPost.story : photoPost.message}</td>
+							</tr>
 						</c:forEach>
-					</ul>
+					</tbody>
+				</table>
 				</div>
 				<div id="test5" class="col s12">
-					<ul>
-						<li>Who can see yours posts: ${postPrivacy}</li>
-					</ul>
+					<div id="privacyChart"></div>
+					<script>
+						var privacyChart = c3.generate({
+						    bindto: '#privacyChart',
+						    size: {
+						    	height: 600
+						    },
+						    data: {
+						        // iris data from R
+						        columns: [
+										<c:forEach items="${privacyCount}" var="privacyPair">
+											['${privacyPair.fst}', "${privacyPair.snd}"],
+										</c:forEach>
+										[]
+						        ],
+						        type : 'pie',
+						    }
+						});
+					</script>
+					<c:forEach items="${privacyCount}" var="privacyPair">
+						["${privacyPair.fst}", "${privacyPair.snd}"]
+					</c:forEach>
 				</div>
 			</div>
 		</main>
