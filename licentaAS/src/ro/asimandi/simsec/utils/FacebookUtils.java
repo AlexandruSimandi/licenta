@@ -201,6 +201,46 @@ public class FacebookUtils {
 		}
 		return groupedPosts;
 	}
+	
+	public static List<ArrayList<Post>> groupPostsWithLocationByMonth(List<Post> posts){
+		ArrayList<Post> clonedPosts = new ArrayList<Post>(posts);
+		Collections.reverse(clonedPosts);
+		
+		List<ArrayList<Post>> groupedPosts = new ArrayList<ArrayList<Post>>();
+		
+		int currentMonth = -1;
+		for(Post post: clonedPosts){
+			if(post.getLongitude() != null){
+				int postMonth = getMonthOfYear(post.getCreated_time());
+				if(currentMonth != postMonth){
+					groupedPosts.add(new ArrayList<Post>());
+					currentMonth = postMonth;
+				}
+				groupedPosts.get(groupedPosts.size() - 1).add(post);
+			}
+		}
+		return groupedPosts;
+	}
+	
+	public static List<ArrayList<Post>> groupPostsWithPhotoByMonth(List<Post> posts){
+		ArrayList<Post> clonedPosts = new ArrayList<Post>(posts);
+		Collections.reverse(clonedPosts);
+		
+		List<ArrayList<Post>> groupedPosts = new ArrayList<ArrayList<Post>>();
+		
+		int currentMonth = -1;
+		for(Post post: clonedPosts){
+			if(post.getObject_id() != null){
+				int postMonth = getMonthOfYear(post.getCreated_time());
+				if(currentMonth != postMonth){
+					groupedPosts.add(new ArrayList<Post>());
+					currentMonth = postMonth;
+				}
+				groupedPosts.get(groupedPosts.size() - 1).add(post);
+			}
+		}
+		return groupedPosts;
+	}
 
 	public static String determinePrivacySettingForPosts(List<Post> allPosts) {
 		final int POST_NUMBER_CHECK_PRIVACY = 10;

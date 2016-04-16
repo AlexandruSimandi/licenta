@@ -23,7 +23,7 @@ import ro.asimandi.simsec.utils.Pair;
 
 @Controller
 @SessionAttributes({ "code", "usedCode", "postPrivacy", "dangerousPostList", "workThreatList", "photoPostList",
-		"postsWithLocation", "groupedPostsByMonth" })
+		"postsWithLocation", "groupedPostsByMonth", "groupedPostsWithLocationByMonth", "groupedPostsWithPhotoByMonth" })
 public class MainController {
 
 	@Autowired
@@ -66,6 +66,8 @@ public class MainController {
 			List<Post> photoPostList = FacebookUtils.getPostsContainingPhotosWithBadPrivacy(databasePosts);
 			List<Pair<Post, Integer>> postsWithLocation = FacebookUtils.getClusteredLocations(databasePosts, 20);
 			List<ArrayList<Post>> groupedPostsByMonth = FacebookUtils.groupPostsByMonth(databasePosts);
+			List<ArrayList<Post>> groupedPostsWithLocationByMonth = FacebookUtils.groupPostsWithLocationByMonth(databasePosts);
+			List<ArrayList<Post>> groupedPostsWithPhotoByMonth = FacebookUtils.groupPostsWithPhotoByMonth(databasePosts);
 			
 			model.addAttribute("workThreatList", workThreatList);
 			model.addAttribute("postPrivacy", postPrivacy);
@@ -74,6 +76,8 @@ public class MainController {
 			model.addAttribute("screenStatus", "results");
 			model.addAttribute("postsCount", allPosts.size());
 			model.addAttribute("groupedPostsByMonth", groupedPostsByMonth);
+			model.addAttribute("groupedPostsWithLocationByMonth", groupedPostsWithLocationByMonth);
+			model.addAttribute("groupedPostsWithPhotoByMonth", groupedPostsWithPhotoByMonth);
 			model.addAttribute("dangerousPostsCount", workThreatList.size());
 			
 			if (workThreatList.size() > 0) {
