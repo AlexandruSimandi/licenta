@@ -16,9 +16,6 @@ public class UserDAOImpl implements UserDAO{
 	
 	@Override
 	public void addUser(User user) {
-		if(!mongoTemplate.collectionExists(User.class)){
-			mongoTemplate.createCollection(User.class);
-		}
 		mongoTemplate.insert(user, "user");
 	}
 
