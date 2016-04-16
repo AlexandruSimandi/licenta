@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -16,22 +15,19 @@ import com.restfb.FacebookClient;
 import com.restfb.FacebookClient.AccessToken;
 import com.restfb.Parameter;
 import com.restfb.WebRequestor;
-import com.restfb.types.Album;
-import com.restfb.types.Location;
-import com.restfb.types.Post;
 
 import edu.stanford.nlp.util.CoreMap;
+import ro.asimandi.simsec.models.Post;
+import ro.asimandi.simsec.models.User;
 
 public class FacebookUtils {
 
 	private FacebookClient facebookClient;
-	private String tokenel;
 
 	@SuppressWarnings("deprecation")
 	public void init(String code) throws IOException {
 		AccessToken token = FacebookUtils.getFacebookUserToken(code);
 		String accessToken = token.getAccessToken();
-		tokenel = accessToken;
 		facebookClient = new DefaultFacebookClient(accessToken);
 	}
 
@@ -61,53 +57,38 @@ public class FacebookUtils {
 
 		return DefaultFacebookClient.AccessToken.fromQueryString(accessTokenResponse.getBody());
 	}
+	
+	public User getUser(){
+		com.restfb.types.User user = facebookClient.fetchObject("me", com.restfb.types.User.class, Parameter.with("fields", "id,first_name,last_name"));
+		User userModel = new User();
+		userModel.setId(user.getId());
+		userModel.setFirst_name(user.getFirstName());
+		userModel.setLast_name(user.getLastName());
+		return userModel;
+	}
 
-	public List<Post> readPosts() throws IOException {
-		ArrayList<Post> allPosts = new ArrayList<Post>();
+	public List<com.restfb.types.Post> readPosts() throws IOException {
+		ArrayList<com.restfb.types.Post> allPosts = new ArrayList<com.restfb.types.Post>();
 
-		Connection<Post> myFeed = facebookClient.fetchConnection("me/feed", Post.class,
+		Connection<com.restfb.types.Post> myFeed = facebookClient.fetchConnection("me/feed", com.restfb.types.Post.class,
 				Parameter.with("fields", "privacy,message,story,actions,created_time,object_id,place"),
 				Parameter.with("limit", 999));
 
 		while (myFeed.getData().size() > 0) {
 			allPosts.addAll(myFeed.getData());
-			myFeed = facebookClient.fetchConnectionPage(myFeed.getNextPageUrl(), Post.class);
+			myFeed = facebookClient.fetchConnectionPage(myFeed.getNextPageUrl(), com.restfb.types.Post.class);
 		}
 
 		return allPosts;
 
 	}
 
-	// public List<Album> readAlbums() throws IOException {
-	// ArrayList<Album> allAlbums = new ArrayList<Album>();
-	//
-	// Connection<Album> albumsConnection =
-	// facebookClient.fetchConnection("me/albums", Album.class,
-	// Parameter.with("fields", "name,privacy,object_id"),
-	// Parameter.with("limit",50));
-	//
-	// while(albumsConnection.getData().size() > 0){
-	// allAlbums.addAll(albumsConnection.getData());
-	// albumsConnection =
-	// facebookClient.fetchConnectionPage(albumsConnection.getNextPageUrl(),
-	// Album.class);
-	// }
-	// //////////////
-	// for(Album album: allAlbums){
-	// System.out.println(album.getName() + " " + album.getPrivacy());
-	// }
-	// ////////////
-	// return allAlbums;
-	// }
-
 	public static List<Pair<Post,Integer>> getClusteredLocations(List<Post> allPosts, double dist) {
 		List<Post> postsWithLocation = new ArrayList<Post>();
 		HashMap<Post, Integer> numberOfGroupedLocations = new HashMap<Post, Integer>();
 		
 		for (Post post : allPosts) {
-			if (post.getPlace() != null) {
-				// System.out.println(post.getId() + " " +
-				// post.getPlace().getLocationAsString());
+			if (post.getLatitude() != null) {
 				if (postsWithLocation.size() == 0) {
 					postsWithLocation.add(post);
 					numberOfGroupedLocations.put(post, 1);
@@ -117,15 +98,7 @@ public class FacebookUtils {
 				boolean existsFlag = false;
 
 				for (Post postWithLocation : postsWithLocation) {
-//					if (post.getPlace().getLocation().getLatitude()
-//							.equals(postWithLocation.getPlace().getLocation().getLatitude())
-//							&& post.getPlace().getLocation().getLongitude()
-//									.equals(postWithLocation.getPlace().getLocation().getLongitude())) {
-//						existsFlag = true;
-//						break;
-//					}
-					
-					if (getDistanceBetweenTwoLocations(post.getPlace().getLocation(), postWithLocation.getPlace().getLocation()) < dist) {
+					if (getDistanceBetweenTwoLocations(post.getLatitude(), post.getLongitude(), postWithLocation.getLatitude(), post.getLongitude()) < dist) {
 						existsFlag = true;
 						numberOfGroupedLocations.put(postWithLocation, numberOfGroupedLocations.remove(postWithLocation) + 1);
 						break;
@@ -144,7 +117,7 @@ public class FacebookUtils {
 		System.out.println("Distance min is " + dist);
 		System.out.println(postsWithLocation.size());
 		for (Post post : postsWithLocation) {
-			System.out.println(numberOfGroupedLocations.get(post) + " " + post.getId() + " " + post.getPlace().getLocationAsString());
+//			System.out.println(numberOfGroupedLocations.get(post) + " " + post.getId() + " " + post.getPlace().getLocationAsString());
 			pairedList.add(new Pair<Post, Integer>(post, numberOfGroupedLocations.get(post)));
 		}
 		
@@ -155,36 +128,14 @@ public class FacebookUtils {
 		List<Post> photosWithBadPrivacyList = new ArrayList<Post>();
 
 		for (Post post : allPosts) {
-			if (post.getObjectId() != null) {
-				if (post.getPrivacy().getValue().equals("EVERYONE")) {
+			if (post.getObject_id() != null) {
+				if (post.getPrivacy().equals("EVERYONE")) {
 					photosWithBadPrivacyList.add(post);
 				}
 			}
 		}
 
-		// for (Post post : photosWithBadPrivacyList) {
-		// System.out.println(post.getStory() + " " + post.getId());
-		// }
-
 		return photosWithBadPrivacyList;
-	}
-
-	public static List<Post> getDangerousPosts(List<Post> allPosts) {
-		List<Post> dangerousPostList = new ArrayList<Post>();
-
-		// for (Post post : allPosts) {
-		// if(post.getPlace() != null){
-		// System.out.println(post.getId() + " " +
-		// post.getPlace().getLocationAsString());
-		// }
-		//
-		// if (isDangerousPost(post)) {
-		// dangerousPostList.add(post);
-		// }
-		// }
-
-		return dangerousPostList;
-
 	}
 
 	public static List<Post> getWorkThreatList(List<Post> allPosts) throws IOException {
@@ -200,11 +151,6 @@ public class FacebookUtils {
 	}
 
 	public static boolean containsWorkThreats(Post post) throws IOException {
-
-		// String[] workNouns = {"boss", "office", "work", "employer", "chief",
-		// "job"};
-		// String[] negativeKeywords = {"urasc", "hate", "sleep", "somn",
-		// "nebun", "innebunesc", "crazy"};
 
 		String message = post.getMessage();
 		if (message == null) {
@@ -232,29 +178,6 @@ public class FacebookUtils {
 		return false;
 	}
 
-	private static boolean isDangerousPost(Post post) {
-
-		String[] foulWords = {};
-
-		String message = post.getMessage();
-		if (message == null) {
-			message = post.getStory();
-			if (message == null) {
-				return false;
-			}
-		}
-		String messageLowered = message.toLowerCase();
-
-		// if (post.getPrivacy().getValue().equals("SELF")) {
-		for (int i = 0; i < foulWords.length; i++) {
-			if (messageLowered.contains(foulWords[i])) {
-				return true;
-			}
-		}
-		// }
-		return false;
-	}
-	
     private static int getMonthOfYear(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
@@ -269,12 +192,52 @@ public class FacebookUtils {
 		
 		int currentMonth = -1;
 		for(Post post: clonedPosts){
-			int postMonth = getMonthOfYear(post.getCreatedTime());
+			int postMonth = getMonthOfYear(post.getCreated_time());
 			if(currentMonth != postMonth){
 				groupedPosts.add(new ArrayList<Post>());
 				currentMonth = postMonth;
 			}
 			groupedPosts.get(groupedPosts.size() - 1).add(post);
+		}
+		return groupedPosts;
+	}
+	
+	public static List<ArrayList<Post>> groupPostsWithLocationByMonth(List<Post> posts){
+		ArrayList<Post> clonedPosts = new ArrayList<Post>(posts);
+		Collections.reverse(clonedPosts);
+		
+		List<ArrayList<Post>> groupedPosts = new ArrayList<ArrayList<Post>>();
+		
+		int currentMonth = -1;
+		for(Post post: clonedPosts){
+			if(post.getLongitude() != null){
+				int postMonth = getMonthOfYear(post.getCreated_time());
+				if(currentMonth != postMonth){
+					groupedPosts.add(new ArrayList<Post>());
+					currentMonth = postMonth;
+				}
+				groupedPosts.get(groupedPosts.size() - 1).add(post);
+			}
+		}
+		return groupedPosts;
+	}
+	
+	public static List<ArrayList<Post>> groupPostsWithPhotoByMonth(List<Post> posts){
+		ArrayList<Post> clonedPosts = new ArrayList<Post>(posts);
+		Collections.reverse(clonedPosts);
+		
+		List<ArrayList<Post>> groupedPosts = new ArrayList<ArrayList<Post>>();
+		
+		int currentMonth = -1;
+		for(Post post: clonedPosts){
+			if(post.getObject_id() != null){
+				int postMonth = getMonthOfYear(post.getCreated_time());
+				if(currentMonth != postMonth){
+					groupedPosts.add(new ArrayList<Post>());
+					currentMonth = postMonth;
+				}
+				groupedPosts.get(groupedPosts.size() - 1).add(post);
+			}
 		}
 		return groupedPosts;
 	}
@@ -286,7 +249,7 @@ public class FacebookUtils {
 		int loopCount = Math.min(POST_NUMBER_CHECK_PRIVACY, postCount);
 		int privacyArrayCounter[] = new int[6];
 		for (int i = 0; i < loopCount; i++) {
-			String privacy = allPosts.get(i).getPrivacy().getValue();
+			String privacy = allPosts.get(i).getPrivacy();
 			if (privacy != null && !privacy.equals("")) {
 				Privacy currentPrivacy = Privacy.valueOf(privacy);
 				privacyArrayCounter[currentPrivacy.value()]++;
@@ -316,13 +279,6 @@ public class FacebookUtils {
 		return null;
 	}
 	
-	public void testSomething(){
-		new DefaultFacebookClient(tokenel);
-		System.out.println(tokenel);
-	}
-	
-	
-	
 	// http://stackoverflow.com/questions/3694380/calculating-distance-between-two-points-using-latitude-longitude-what-am-i-doi
 	public static double distance(double lat1, double lng1, double lat2, double lng2) {
 		double a = (lat1 - lat2) * distPerLat(lat1);
@@ -340,8 +296,8 @@ public class FacebookUtils {
 				- 1.4558127346 * lat + 110579.25662316;
 	}
 
-	private static double getDistanceBetweenTwoLocations(Location a, Location b) {
-		return distance(a.getLatitude(), a.getLongitude(), b.getLatitude(), b.getLongitude());
+	private static double getDistanceBetweenTwoLocations(String aLatitude, String aLongitude, String bLatitude, String bLongitude) {
+		return distance(Double.parseDouble(aLatitude), Double.parseDouble(aLongitude), Double.parseDouble(bLatitude), Double.parseDouble(bLongitude));
 	}
 
 	// TODO read custom settings for privacy
