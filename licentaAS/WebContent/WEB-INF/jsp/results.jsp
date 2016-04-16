@@ -8,6 +8,9 @@
 	<layout:put block="contents">
 		<script src="js/main.js"></script>
 		<script src="js/Chart.js"></script>
+		<script src="js/d3.min.js"></script>
+		<script src="js/c3.min.js"></script>
+		<link rel="stylesheet" href="css/c3.css">
 		<script>
 			var markers = new Array();
 			var id;
