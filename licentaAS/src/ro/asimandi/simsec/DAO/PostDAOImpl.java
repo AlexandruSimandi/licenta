@@ -6,9 +6,12 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 import ro.asimandi.simsec.models.Post;
+import ro.asimandi.simsec.models.User;
 
 @Repository
 public class PostDAOImpl implements PostDAO {
@@ -50,7 +53,7 @@ public class PostDAOImpl implements PostDAO {
 	}
 	
 	@Override
-	public void addPostsFb(List<com.restfb.types.Post> posts) {
+	public void addPostsFb(List<com.restfb.types.Post> posts, User user) {
 		HashMap<String, Boolean> hash = new HashMap<String, Boolean>();
 		for (int i = 0; i < posts.size(); i++) {
 			if(hash.containsKey(posts.get(i).getId())){
@@ -66,7 +69,7 @@ public class PostDAOImpl implements PostDAO {
 			Post modelPost = new Post();
 			
 			modelPost.setId(post.getId());
-			if(post.getPlace() != null){
+			if(post.getPlace() != null && post.getPlace().getLocation() != null && post.getPlace().getLocation().getLatitude() != null){
 				modelPost.setLatitude(post.getPlace().getLocation().getLatitude().toString());
 				modelPost.setLongitude(post.getPlace().getLocation().getLongitude().toString());	
 			}
@@ -79,6 +82,8 @@ public class PostDAOImpl implements PostDAO {
 				modelPost.setPrivacy(post.getPrivacy().getValue());
 			}
 			modelPost.setStory(post.getStory());
+			modelPost.setCreated_time(post.getCreatedTime());
+			modelPost.setUser_id(user.getId());
 			modelPosts.add(modelPost);
 		}
 		this.addPosts(modelPosts);
@@ -86,7 +91,9 @@ public class PostDAOImpl implements PostDAO {
 	
 
 	@Override
-	public List<Post> listPost() {
-		return mongoTemplate.findAll(Post.class, "post");
+	public List<Post> listPost(User user) {
+		Query query = new Query();
+		query.addCriteria(Criteria.where("user_id").is(user.getId()));
+		return mongoTemplate.find(query, Post.class);
 	}
 }

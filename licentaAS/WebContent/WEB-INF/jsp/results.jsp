@@ -23,8 +23,8 @@
 			<c:forEach items="${postsWithLocation}" var="locationPost">
 				markerEntity = new Array();
 				id = '${locationPost.fst.message}';
-				longitude = ${locationPost.fst.place.location.longitude};
-				latitude = ${locationPost.fst.place.location.latitude};
+				longitude = ${locationPost.fst.longitude};
+				latitude = ${locationPost.fst.latitude};
 				markerEntity.push(id);
 				markerEntity.push(latitude);
 				markerEntity.push(longitude);
@@ -33,7 +33,7 @@
 				infoEntity = new Array();
 				infoEntityString = '<div class="info_content">' +
 										'<h5>${locationPost.fst.message}</h5>' +
-										'<p><a href="${locationPost.fst.actions[0].link}" target="_blank">You were here ${locationPost.snd} times</a></p>' +
+										'<p><a href="${locationPost.fst.link}" target="_blank">You were here ${locationPost.snd} times</a></p>' +
 									'</div';
 				infoEntity.push(infoEntityString);
 				infoWindowContent.push(infoEntity);
@@ -87,10 +87,10 @@
 						<c:forEach items="${workThreatList}" var="workPost"
 							varStatus="workLoop">
 							<tr>
-								<td><a target="_blank" href="${workPost.actions[0].link}"><fmt:formatDate value="${workPost.createdTime}"
+								<td><a target="_blank" href="${workPost.link}"><fmt:formatDate value="${workPost.created_time}"
 										pattern="dd-MM-yyyy HH:mm:ss" /></a></td>
 								<td>${workPost.message}</td>
-								<td>${workPost.privacy.value}</td>
+								<td>${workPost.privacy}</td>
 							</tr>						
 						</c:forEach>
 					</tbody>
@@ -102,8 +102,8 @@
 					<ul>
 						<c:forEach items="${photoPostList}" var="photoPost">
 							<li title="${photoPost.message}"><a target="_blank"
-								href="${photoPost.actions[0].link}"> ${photoPost.message} - <fmt:formatDate
-										value="${photoPost.createdTime}" pattern="dd-MM-yyyy HH:mm:ss" />
+								href="${photoPost.link}"> ${photoPost.message} - <fmt:formatDate
+										value="${photoPost.created_time}" pattern="dd-MM-yyyy HH:mm:ss" />
 							</a></li>
 						</c:forEach>
 					</ul>

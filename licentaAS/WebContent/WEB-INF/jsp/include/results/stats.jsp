@@ -8,7 +8,7 @@
 	var count;
 	var label;
 	<c:forEach items="${groupedPostsByMonth}" var="groupedPosts" varStatus="groupedLoop">
-		label =  '<fmt:formatDate value="${groupedPosts[0].createdTime}" pattern="MM-yyyy" />';
+		label =  '<fmt:formatDate value="${groupedPosts[0].created_time}" pattern="MM-yyyy" />';
 		labels.push(label);
 		count = '${fn:length(groupedPosts)}';
 		dataCount.push(count);
