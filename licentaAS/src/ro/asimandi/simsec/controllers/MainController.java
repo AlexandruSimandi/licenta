@@ -7,11 +7,14 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import com.restfb.experimental.api.Facebook;
 
@@ -23,7 +26,7 @@ import ro.asimandi.simsec.utils.FacebookUtils;
 import ro.asimandi.simsec.utils.Pair;
 
 @Controller
-@SessionAttributes({"user", "code", "usedCode", "postPrivacy", "dangerousPostList", "workThreatList", "photoPostList",
+@SessionAttributes({"user", "code", "usedCode", "facebookUtils", "postPrivacy", "dangerousPostList", "workThreatList", "photoPostList",
 		"postsWithLocation", "groupedPostsByMonth", "groupedPostsWithLocationByMonth", "groupedPostsWithPhotoByMonth", "privacyCount"})
 public class MainController {
 
@@ -37,11 +40,32 @@ public class MainController {
 		model.addAttribute("screenStatus", "login");
 		return "login";
 	}
+	
+	@RequestMapping("/home")
+	public String home(Model model){
+		model.addAttribute("screenStatus", "home");
+		return "home";
+	}
 
 	@RequestMapping("/loginSolver")
-	public String login(@RequestParam String code, Model model) throws IOException {
+	public RedirectView login(@RequestParam String code, Model model) throws IOException {
 		model.addAttribute("code", code);
 		model.addAttribute("screenStatus", "loading");
+		
+		FacebookUtils facebookUtils = new FacebookUtils();
+		facebookUtils.init(code);
+		User user = facebookUtils.getUser();
+		userDao.addUser(user);
+		model.addAttribute("user", user);
+		model.addAttribute("facebookUtils", facebookUtils);
+	    RedirectView redirect = new RedirectView("/home");
+	    redirect.setExposeModelAttributes(false);
+	    return redirect;
+	}
+	
+	@RequestMapping("/loading")
+	public String loading(Model model){
+		model.addAttribute("screenStatus", "results");
 		return "loading";
 	}
 
@@ -52,12 +76,8 @@ public class MainController {
 			return "redirect:/login";
 		} else if (session.getAttribute("usedCode") == null) {
 			model.addAttribute("usedCode", true);
-			FacebookUtils facebookUtils = new FacebookUtils();
-			facebookUtils.init(session.getAttribute("code").toString());
-			
-			User user = facebookUtils.getUser();
-			userDao.addUser(user);
-
+			FacebookUtils facebookUtils = (FacebookUtils) session.getAttribute("facebookUtils");
+			User user = (User) session.getAttribute("user");
 			List<com.restfb.types.Post> allPosts = facebookUtils.readPosts();
 			postDao.addPostsFb(allPosts, user);
 
@@ -88,7 +108,8 @@ public class MainController {
 				model.addAttribute("hasWorkThreats", true);
 			}
 		}
-
+		
+		model.addAttribute("screenStatus", "results");
 		return "results";
 
 	}
