@@ -127,7 +127,8 @@
 						var privacyChart = c3.generate({
 						    bindto: '#privacyChart',
 						    size: {
-						    	height: 600
+						    	//height: 600
+						    	height: $(window).height() - 200
 						    },
 						    data: {
 						        // iris data from R

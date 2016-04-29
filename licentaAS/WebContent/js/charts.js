@@ -2,10 +2,10 @@ $(document).ready(function(){
 	var chart = c3.generate({
 	    bindto: '#chart',
 	    padding: {
-	        right: 80
+	        right: 30
 	    },
 	    size: {
-	    	height: 600
+	    	height: $(window).height() - 200
 	    },
 	    data: {
 	    	xs: {
@@ -34,7 +34,7 @@ $(document).ready(function(){
 	        x: {
 	            type: 'timeseries',
 	            tick: {
-	                format: '%Y-%m-%d'
+	                format: '%Y-%m'
 	            }
 	        }
 	    },
