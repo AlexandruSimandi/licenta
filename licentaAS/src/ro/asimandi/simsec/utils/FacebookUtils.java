@@ -83,15 +83,17 @@ public class FacebookUtils {
 
 	}
 
-	public static List<Pair<Post,Integer>> getClusteredLocations(List<Post> allPosts, double dist) {
+	public static List<Pair<List<Post>,Integer>> getClusteredLocations(List<Post> allPosts, double dist) {
 		List<Post> postsWithLocation = new ArrayList<Post>();
-		HashMap<Post, Integer> numberOfGroupedLocations = new HashMap<Post, Integer>();
+		HashMap<Post, List<Post>> numberOfGroupedLocations = new HashMap<Post, List<Post>>();
 		
 		for (Post post : allPosts) {
 			if (post.getLatitude() != null) {
 				if (postsWithLocation.size() == 0) {
+					List<Post> newList = new ArrayList<Post>();
+					newList.add(post);
 					postsWithLocation.add(post);
-					numberOfGroupedLocations.put(post, 1);
+					numberOfGroupedLocations.put(post, newList);
 					continue;
 				}
 
@@ -100,33 +102,37 @@ public class FacebookUtils {
 				for (Post postWithLocation : postsWithLocation) {
 					if (getDistanceBetweenTwoLocations(post.getLatitude(), post.getLongitude(), postWithLocation.getLatitude(), post.getLongitude()) < dist) {
 						existsFlag = true;
-						numberOfGroupedLocations.put(postWithLocation, numberOfGroupedLocations.remove(postWithLocation) + 1);
+						List<Post> cluster = numberOfGroupedLocations.get(postWithLocation);
+						cluster.add(post);
+//						numberOfGroupedLocations.put(postWithLocation, numberOfGroupedLocations.remove(postWithLocation) + 1);
 						break;
 					}
 				}
 
 				if (!existsFlag) {
-					numberOfGroupedLocations.put(post, 1);
+					List<Post> newList = new ArrayList<Post>();
+					newList.add(post);
 					postsWithLocation.add(post);
+					numberOfGroupedLocations.put(post, newList);
 				}
 
 			}
 		}
 		
-		ArrayList<Pair<Post, Integer>> pairedList = new ArrayList<Pair<Post, Integer>>();
+		ArrayList<Pair<List<Post>, Integer>> pairedList = new ArrayList<Pair<List<Post>, Integer>>();
 		System.out.println("Distance min is " + dist);
 		System.out.println(postsWithLocation.size());
 		for (Post post : postsWithLocation) {
 //			System.out.println(numberOfGroupedLocations.get(post) + " " + post.getId() + " " + post.getPlace().getLocationAsString());
-			pairedList.add(new Pair<Post, Integer>(post, numberOfGroupedLocations.get(post)));
+			pairedList.add(new Pair<List<Post>, Integer>(numberOfGroupedLocations.get(post), numberOfGroupedLocations.get(post).size()));
 		}
 		
 		return pairedList;
 	}
 
-	public static List<Pair<Post,Integer>> getClusteredLocationsByHoliday(List<Post> allPosts){
+	public static List<Pair<List<Post>,Integer>> getClusteredLocationsByHoliday(List<Post> allPosts){
 		final int AREA_SIZE = 20000;
-		List<Pair<Post,Integer>> clusters = getClusteredLocations(allPosts, AREA_SIZE);
+		List<Pair<List<Post>,Integer>> clusters = getClusteredLocations(allPosts, AREA_SIZE);
 		int maxOne = Integer.MIN_VALUE;
 		int maxPos = -1;
 		for (int i = 0; i < clusters.size(); i++) {
