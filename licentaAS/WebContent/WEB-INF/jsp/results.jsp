@@ -56,15 +56,17 @@
 		</style>
 		<main>
 		<ul id="tabs" class="tabs">
-			<li class="tab col s3"><a class="black-text" href="#test1">Stats</a></li>
 			<li class="tab col s3"><a class="active black-text"
 				href="#test2">Locations</a></li>
+			<li class="tab col s3"><a class="black-text" href="#test1">Stats</a></li>
 			<li class="tab col s3"><a class="black-text" href="#test3">Dangerous
 					posts</a></li>
 			<li class="tab col s3"><a class="black-text" href="#test4">Public
 					Photos</a></li>
 			<li class="tab col s3"><a class="black-text" href="#test5">Privacy
 					Settings</a></li>
+			<li class="tab col s3"><a class="black-text" href="#test6">Holiday warning
+					</a></li>						
 		</ul>
 			<div class="row">
 				<div class="col s12 container"></div>
@@ -142,9 +144,14 @@
 						    }
 						});
 					</script>
-					<c:forEach items="${privacyCount}" var="privacyPair">
-						["${privacyPair.fst}", "${privacyPair.snd}"]
-					</c:forEach>
+				</div>
+				<div id="test6" class="col s16">
+					<h2>Trafalet</h2>
+					<ul>
+						<c:forEach items="${groupedPostsByHoliday}" var="holidayPlace">
+							<li>${holidayPlace.fst.message} ${holidayPlace.fst.story} - ${holidayPlace.snd}</li>
+						</c:forEach>
+					</ul>
 				</div>
 			</div>
 		</main>

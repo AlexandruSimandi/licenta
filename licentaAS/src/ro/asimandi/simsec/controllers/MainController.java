@@ -28,7 +28,7 @@ import ro.asimandi.simsec.utils.Pair;
 
 @Controller
 @SessionAttributes({"user", "code", "usedCode", "facebookUtils", "postPrivacy", "dangerousPostList", "workThreatList", "photoPostList",
-		"postsWithLocation", "groupedPostsByMonth", "groupedPostsWithLocationByMonth", "groupedPostsWithPhotoByMonth", "privacyCount", "newAnalysis"})
+		"postsWithLocation", "groupedPostsByMonth", "groupedPostsWithLocationByMonth", "groupedPostsWithPhotoByMonth", "privacyCount", "newAnalysis", "groupedPostsByHoliday"})
 public class MainController {
 
 	@Autowired
@@ -87,7 +87,7 @@ public class MainController {
 	public String analyze(HttpSession session, Model model) throws IOException {
 		User user = (User) session.getAttribute("user");
 		FacebookUtils facebookUtils = (FacebookUtils) session.getAttribute("facebookUtils");
-		if(user.getAnalyzed() == null || user.getAnalyzed() == false || (session.getAttribute("newAnalysis") != null && (Boolean)session.getAttribute("newAnalysis") == true)){
+		if(user.getAnalyzed() == null || user.getAnalyzed() == false || (session != null && session.getAttribute("newAnalysis") != null && (Boolean)session.getAttribute("newAnalysis") == true)){
 			model.addAttribute("newAnalysis", false);
 			List<com.restfb.types.Post> allPosts = facebookUtils.readPosts();
 			postDao.removePostsByUser(user);
@@ -103,11 +103,12 @@ public class MainController {
 			List<Post> workThreatList = FacebookUtils.getWorkThreatList(databasePosts);
 			String postPrivacy = FacebookUtils.determinePrivacySettingForPosts(databasePosts);
 			List<Post> photoPostList = FacebookUtils.getPostsContainingPhotosWithBadPrivacy(databasePosts);
-			List<Pair<Post, Integer>> postsWithLocation = FacebookUtils.getClusteredLocations(databasePosts, 20);
+			List<Pair<Post, Integer>> postsWithLocation = FacebookUtils.getClusteredLocations(databasePosts, 1);
 			List<ArrayList<Post>> groupedPostsByMonth = FacebookUtils.groupPostsByMonth(databasePosts);
 			List<ArrayList<Post>> groupedPostsWithLocationByMonth = FacebookUtils.groupPostsWithLocationByMonth(databasePosts);
 			List<ArrayList<Post>> groupedPostsWithPhotoByMonth = FacebookUtils.groupPostsWithPhotoByMonth(databasePosts);
 			List<Pair<String, Integer>> privacyCount = FacebookUtils.countPrivacy(databasePosts);
+			List<Pair<Post, Integer>> groupedPostsByHoliday = FacebookUtils.getClusteredLocationsByHoliday(databasePosts);
 			
 			model.addAttribute("workThreatList", workThreatList);
 			model.addAttribute("postPrivacy", postPrivacy);
@@ -121,6 +122,7 @@ public class MainController {
 			model.addAttribute("dangerousPostsCount", workThreatList.size());
 			model.addAttribute("user", user);
 			model.addAttribute("privacyCount", privacyCount);
+			model.addAttribute("groupedPostsByHoliday", groupedPostsByHoliday);
 		}
 		
 		model.addAttribute("screenStatus", "results");

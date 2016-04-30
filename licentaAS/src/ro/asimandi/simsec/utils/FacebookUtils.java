@@ -124,6 +124,21 @@ public class FacebookUtils {
 		return pairedList;
 	}
 
+	public static List<Pair<Post,Integer>> getClusteredLocationsByHoliday(List<Post> allPosts){
+		final int AREA_SIZE = 20000;
+		List<Pair<Post,Integer>> clusters = getClusteredLocations(allPosts, AREA_SIZE);
+		int maxOne = Integer.MIN_VALUE;
+		int maxPos = -1;
+		for (int i = 0; i < clusters.size(); i++) {
+			if(clusters.get(i).getSnd() > maxOne){
+				maxOne = clusters.get(i).getSnd();
+				maxPos = i;
+			}
+		}
+		clusters.remove(maxPos);
+		return clusters;
+	}
+	
 	public static List<Post> getPostsContainingPhotosWithBadPrivacy(List<Post> allPosts) {
 		List<Post> photosWithBadPrivacyList = new ArrayList<Post>();
 
