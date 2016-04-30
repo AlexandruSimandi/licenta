@@ -25,9 +25,9 @@
 			
 			<c:forEach items="${postsWithLocation}" var="locationPost">
 				markerEntity = new Array();
-				id = '${locationPost.fst.message}';
-				longitude = ${locationPost.fst.longitude};
-				latitude = ${locationPost.fst.latitude};
+				id = '${locationPost.snd} times';
+				longitude = ${locationPost.fst[0].longitude};
+				latitude = ${locationPost.fst[0].latitude};
 				markerEntity.push(id);
 				markerEntity.push(latitude);
 				markerEntity.push(longitude);
@@ -35,9 +35,10 @@
 				
 				infoEntity = new Array();
 				infoEntityString = '<div class="info_content">' +
-										'<h5>${locationPost.fst.message}</h5>' +
-										'<p><a href="${locationPost.fst.link}" target="_blank">You were here ${locationPost.snd} times</a></p>' +
-									'</div';
+										'<h5>${locationPost.snd} times</h5><ul><li><div style="max-height: 100px;">'
+										<c:forEach items="${locationPost.fst}" var="post">+ "<a href=\"${post.link}\" target=\"_blank\">${post.created_time}</a><br>"</c:forEach>
+										
+									+ '</div></li></ul></div';
 				infoEntity.push(infoEntityString);
 				infoWindowContent.push(infoEntity);
 				
@@ -124,13 +125,14 @@
 				</table>
 				</div>
 				<div id="test5" class="col s12">
+					<h5>${postPrivacy}</h5>
 					<div id="privacyChart"></div>
 					<script>
 						var privacyChart = c3.generate({
 						    bindto: '#privacyChart',
 						    size: {
 						    	//height: 600
-						    	height: $(window).height() - 200
+						    	height: $(window).height() - 220
 						    },
 						    data: {
 						        // iris data from R
@@ -146,10 +148,9 @@
 					</script>
 				</div>
 				<div id="test6" class="col s16">
-					<h2>Trafalet</h2>
 					<ul>
 						<c:forEach items="${groupedPostsByHoliday}" var="holidayPlace">
-							<li>${holidayPlace.fst.message} ${holidayPlace.fst.story} - ${holidayPlace.snd}</li>
+							<li>${holidayPlace.snd}</li>
 						</c:forEach>
 					</ul>
 				</div>

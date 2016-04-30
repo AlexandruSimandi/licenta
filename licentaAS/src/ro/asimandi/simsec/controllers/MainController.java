@@ -103,12 +103,12 @@ public class MainController {
 			List<Post> workThreatList = FacebookUtils.getWorkThreatList(databasePosts);
 			String postPrivacy = FacebookUtils.determinePrivacySettingForPosts(databasePosts);
 			List<Post> photoPostList = FacebookUtils.getPostsContainingPhotosWithBadPrivacy(databasePosts);
-			List<Pair<Post, Integer>> postsWithLocation = FacebookUtils.getClusteredLocations(databasePosts, 1);
+			List<Pair<List<Post>, Integer>> postsWithLocation = FacebookUtils.getClusteredLocations(databasePosts, 1);
 			List<ArrayList<Post>> groupedPostsByMonth = FacebookUtils.groupPostsByMonth(databasePosts);
 			List<ArrayList<Post>> groupedPostsWithLocationByMonth = FacebookUtils.groupPostsWithLocationByMonth(databasePosts);
 			List<ArrayList<Post>> groupedPostsWithPhotoByMonth = FacebookUtils.groupPostsWithPhotoByMonth(databasePosts);
 			List<Pair<String, Integer>> privacyCount = FacebookUtils.countPrivacy(databasePosts);
-			List<Pair<Post, Integer>> groupedPostsByHoliday = FacebookUtils.getClusteredLocationsByHoliday(databasePosts);
+			List<Pair<List<Post>, Integer>> groupedPostsByHoliday = FacebookUtils.getClusteredLocationsByHoliday(databasePosts);
 			
 			model.addAttribute("workThreatList", workThreatList);
 			model.addAttribute("postPrivacy", postPrivacy);
