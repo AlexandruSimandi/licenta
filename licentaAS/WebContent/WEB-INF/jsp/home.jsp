@@ -8,7 +8,13 @@
 		<main>
 			<div class="container">
 				<h3>Hello ${user.first_name}</h3>
-				<a class="waves-effect waves-orange btn-large indigo darken-4" href="/loading">Analyze</a>
+				<c:if test="${user.analyzed == false}">
+					<h4>You never analyzed your account</h4>
+				</c:if>
+				<c:if test="${user.analyzed == true}">
+					<h5>You analyzed this account last time on <fmt:formatDate value="${user.last_analysis}" pattern="HH:mm:ss dd-MM-yyyy" /></h5>
+				</c:if>
+				<a class="waves-effect waves-orange btn-large indigo darken-4" href="/analyse">Analyze</a>
 				<a class="waves-effect waves-orange btn-large indigo darken-4" href="/logout">Logout</a>
 			</div>
 		</main>

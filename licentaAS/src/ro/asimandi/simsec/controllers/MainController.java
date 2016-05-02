@@ -2,6 +2,7 @@ package ro.asimandi.simsec.controllers;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -27,7 +28,7 @@ import ro.asimandi.simsec.utils.Pair;
 
 @Controller
 @SessionAttributes({"user", "code", "usedCode", "facebookUtils", "postPrivacy", "dangerousPostList", "workThreatList", "photoPostList",
-		"postsWithLocation", "groupedPostsByMonth", "groupedPostsWithLocationByMonth", "groupedPostsWithPhotoByMonth", "privacyCount"})
+		"postsWithLocation", "groupedPostsByMonth", "groupedPostsWithLocationByMonth", "groupedPostsWithPhotoByMonth", "privacyCount", "newAnalysis", "groupedPostsByHoliday"})
 public class MainController {
 
 	@Autowired
@@ -35,6 +36,7 @@ public class MainController {
 	@Autowired
 	private PostDAO postDao;
 
+	//TODO if logged in redirect to home
 	@RequestMapping(value = { "/", "/login" })
 	public String login(Model model) throws IOException {
 		model.addAttribute("screenStatus", "login");
@@ -55,6 +57,11 @@ public class MainController {
 		FacebookUtils facebookUtils = new FacebookUtils();
 		facebookUtils.init(code);
 		User user = facebookUtils.getUser();
+		user.setAnalyzed(false);
+		User dbUser = userDao.getUserById(user.getId());
+		if(dbUser != null){
+			user = dbUser;
+		}
 		userDao.addUser(user);
 		model.addAttribute("user", user);
 		model.addAttribute("facebookUtils", facebookUtils);
@@ -63,50 +70,59 @@ public class MainController {
 	    return redirect;
 	}
 	
+	@RequestMapping("/analyse")
+	public String analyze(Model model){
+		model.addAttribute("newAnalysis", true);
+		return "redirect:/loading";
+	}
+	
 	@RequestMapping("/loading")
 	public String loading(Model model){
 		model.addAttribute("screenStatus", "results");
 		return "loading";
 	}
 
-	@RequestMapping("/results")
-	public String scan(HttpSession session, Model model) throws IOException {
-		if (session.getAttribute("code") == null) {
-			System.out.println("code is null");
-			return "redirect:/login";
-		} else if (session.getAttribute("usedCode") == null) {
-			model.addAttribute("usedCode", true);
-			FacebookUtils facebookUtils = (FacebookUtils) session.getAttribute("facebookUtils");
-			User user = (User) session.getAttribute("user");
-			List<com.restfb.types.Post> allPosts = facebookUtils.readPosts();
-			postDao.addPostsFb(allPosts, user);
 
+	@RequestMapping("/results")
+	public String analyze(HttpSession session, Model model) throws IOException {
+		User user = (User) session.getAttribute("user");
+		FacebookUtils facebookUtils = (FacebookUtils) session.getAttribute("facebookUtils");
+		if(user.getAnalyzed() == null || user.getAnalyzed() == false || (session != null && session.getAttribute("newAnalysis") != null && (Boolean)session.getAttribute("newAnalysis") == true)){
+			model.addAttribute("newAnalysis", false);
+			List<com.restfb.types.Post> allPosts = facebookUtils.readPosts();
+			postDao.removePostsByUser(user);
+			postDao.addPostsFb(allPosts, user);
+			user.setAnalyzed(true);
+			user.setLast_analysis(new Date(System.currentTimeMillis()));
+			userDao.deleteUser(user);
+			userDao.addUser(user);
+		}
+		
+		if(!model.containsAttribute("privacyCount")){
 			List<Post> databasePosts = postDao.listPost(user);
 			List<Post> workThreatList = FacebookUtils.getWorkThreatList(databasePosts);
 			String postPrivacy = FacebookUtils.determinePrivacySettingForPosts(databasePosts);
 			List<Post> photoPostList = FacebookUtils.getPostsContainingPhotosWithBadPrivacy(databasePosts);
-			List<Pair<Post, Integer>> postsWithLocation = FacebookUtils.getClusteredLocations(databasePosts, 20);
+			List<Pair<List<Post>, Integer>> postsWithLocation = FacebookUtils.getClusteredLocations(databasePosts, 1);
 			List<ArrayList<Post>> groupedPostsByMonth = FacebookUtils.groupPostsByMonth(databasePosts);
 			List<ArrayList<Post>> groupedPostsWithLocationByMonth = FacebookUtils.groupPostsWithLocationByMonth(databasePosts);
 			List<ArrayList<Post>> groupedPostsWithPhotoByMonth = FacebookUtils.groupPostsWithPhotoByMonth(databasePosts);
 			List<Pair<String, Integer>> privacyCount = FacebookUtils.countPrivacy(databasePosts);
+			List<Pair<List<Post>, Integer>> groupedPostsByHoliday = FacebookUtils.getClusteredLocationsByHoliday(databasePosts);
 			
 			model.addAttribute("workThreatList", workThreatList);
 			model.addAttribute("postPrivacy", postPrivacy);
 			model.addAttribute("photoPostList", photoPostList);
 			model.addAttribute("postsWithLocation", postsWithLocation);
 			model.addAttribute("screenStatus", "results");
-			model.addAttribute("postsCount", allPosts.size());
+			model.addAttribute("postsCount", databasePosts.size());
 			model.addAttribute("groupedPostsByMonth", groupedPostsByMonth);
 			model.addAttribute("groupedPostsWithLocationByMonth", groupedPostsWithLocationByMonth);
 			model.addAttribute("groupedPostsWithPhotoByMonth", groupedPostsWithPhotoByMonth);
 			model.addAttribute("dangerousPostsCount", workThreatList.size());
 			model.addAttribute("user", user);
 			model.addAttribute("privacyCount", privacyCount);
-			
-			if (workThreatList.size() > 0) {
-				model.addAttribute("hasWorkThreats", true);
-			}
+			model.addAttribute("groupedPostsByHoliday", groupedPostsByHoliday);
 		}
 		
 		model.addAttribute("screenStatus", "results");
