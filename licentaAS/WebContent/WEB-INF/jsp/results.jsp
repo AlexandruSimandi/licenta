@@ -147,12 +147,36 @@
 						});
 					</script>
 				</div>
-				<div id="test6" class="col s16">
-					<ul>
-						<c:forEach items="${groupedPostsByHoliday}" var="holidayPlace">
-							<li>${holidayPlace.snd}</li>
-						</c:forEach>
-					</ul>
+				<div id="test6" class="col s12">
+				  <ul class="collapsible popout" data-collapsible="accordion">
+					<c:forEach items="${groupedPostsByHoliday}" var="holidayPlace" varStatus="loop">
+					<li>
+				      <div id="cluster${loop.index}" class="collapsible-header">${holidayPlace.snd}</div>
+				      <script>
+				      	$.get('http://nominatim.openstreetmap.org/reverse?lat=${holidayPlace.fst[0].latitude}&lon=${holidayPlace.fst[0].longitude}', function(data){
+				      		var $xml = $(data);
+  							var $city = $xml.find("city");
+  							if($city.length == 0){
+  								$city = $xml.find("town");
+  							}
+  							console.log($city);
+  							var times${holidayPlace.snd} = '${holidayPlace.snd}';
+  							if(times${holidayPlace.snd} > 1){
+  								$('#cluster${loop.index}').html($city.text() + " - ${holidayPlace.snd} times");	
+  							} else {
+  								$('#cluster${loop.index}').html($city.text() + " - one time");
+  							}
+				      		
+				      	});
+				      </script>
+				      <div class="collapsible-body">
+				      	<c:forEach items="${holidayPlace.fst}" var="place">
+				      		<p style="padding-top: 8px; padding-bottom: 8px;"><a href="${place.link}" target="_blank">${place.story}</a></p>
+				      	</c:forEach>
+				      </div>
+				     </li>
+					</c:forEach>
+				  </ul>
 				</div>
 			</div>
 		</main>
