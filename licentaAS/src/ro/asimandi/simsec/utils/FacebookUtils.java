@@ -339,7 +339,7 @@ public class FacebookUtils {
 	}
 
 	// TODO read custom settings for privacy
-	private static String beautifyPrivacyString(String privacy) {
+	public static String beautifyPrivacyString(String privacy) {
 		switch (privacy) {
 		case "EVERYONE":
 			return "everyone";

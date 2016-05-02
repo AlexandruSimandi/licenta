@@ -24,7 +24,6 @@
 						<li class="${screenStatus == 'home' ? 'active' : ''}"><a class="waves-effect waves-orange ${screenStatus == 'home' ? 'white-text' : ''}" href="home"><i class="material-icons left">perm_identity</i>Account</a></li>
 					</c:if>
 					<li class="${screenStatus == 'results' ? 'active' : ''}"><a class="waves-effect waves-orange ${screenStatus == 'results' ? 'white-text' : ''}" href="loading"><i class="material-icons left">assignment</i>Results</a></li>
-					<li class="${screenStatus == 'recommendations' ? 'active' : ''}"><a class="waves-effect waves-orange ${screenStatus == 'recommendations' ? 'white-text' : ''}" href="#!"><i class="material-icons left">assignment_late</i>Recommendations</a></li>
 				</ul>
 				<div class="nav-wrapper">
 					<div class="container">

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import ro.asimandi.simsec.models.Post;
 import ro.asimandi.simsec.models.User;
+import ro.asimandi.simsec.utils.FacebookUtils;
 
 @Repository
 public class PostDAOImpl implements PostDAO {
