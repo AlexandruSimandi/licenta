@@ -96,4 +96,12 @@ public class PostDAOImpl implements PostDAO {
 		query.addCriteria(Criteria.where("user_id").is(user.getId()));
 		return mongoTemplate.find(query, Post.class);
 	}
+
+	@Override
+	public void removePostsByUser(User user) {
+		Query query = new Query();
+		query.addCriteria(Criteria.where("user_id").is(user.getId()));
+		mongoTemplate.remove(query, Post.class);
+	}
+	
 }

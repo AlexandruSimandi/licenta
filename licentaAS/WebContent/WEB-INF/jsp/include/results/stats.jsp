@@ -42,8 +42,8 @@
 <style>
 
 #chart svg {
-  height: 600px;
-  width: 98%;
+  /* height: 600px; */
+  width: 100%;
 }
 
 #chart {

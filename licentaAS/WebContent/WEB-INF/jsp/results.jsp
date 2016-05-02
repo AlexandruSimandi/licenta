@@ -25,9 +25,9 @@
 			
 			<c:forEach items="${postsWithLocation}" var="locationPost">
 				markerEntity = new Array();
-				id = '${locationPost.fst.message}';
-				longitude = ${locationPost.fst.longitude};
-				latitude = ${locationPost.fst.latitude};
+				id = '${locationPost.snd} times';
+				longitude = ${locationPost.fst[0].longitude};
+				latitude = ${locationPost.fst[0].latitude};
 				markerEntity.push(id);
 				markerEntity.push(latitude);
 				markerEntity.push(longitude);
@@ -35,9 +35,10 @@
 				
 				infoEntity = new Array();
 				infoEntityString = '<div class="info_content">' +
-										'<h5>${locationPost.fst.message}</h5>' +
-										'<p><a href="${locationPost.fst.link}" target="_blank">You were here ${locationPost.snd} times</a></p>' +
-									'</div';
+										'<h5>${locationPost.snd} times</h5><ul><li><div style="max-height: 100px;">'
+										<c:forEach items="${locationPost.fst}" var="post">+ "<a href=\"${post.link}\" target=\"_blank\">${post.created_time}</a><br>"</c:forEach>
+										
+									+ '</div></li></ul></div';
 				infoEntity.push(infoEntityString);
 				infoWindowContent.push(infoEntity);
 				
@@ -56,15 +57,17 @@
 		</style>
 		<main>
 		<ul id="tabs" class="tabs">
-			<li class="tab col s3"><a class="black-text" href="#test1">Stats</a></li>
 			<li class="tab col s3"><a class="active black-text"
 				href="#test2">Locations</a></li>
+			<li class="tab col s3"><a class="black-text" href="#test1">Stats</a></li>
 			<li class="tab col s3"><a class="black-text" href="#test3">Dangerous
 					posts</a></li>
 			<li class="tab col s3"><a class="black-text" href="#test4">Public
 					Photos</a></li>
 			<li class="tab col s3"><a class="black-text" href="#test5">Privacy
 					Settings</a></li>
+			<li class="tab col s3"><a class="black-text" href="#test6">Holiday warning
+					</a></li>						
 		</ul>
 			<div class="row">
 				<div class="col s12 container"></div>
@@ -122,12 +125,14 @@
 				</table>
 				</div>
 				<div id="test5" class="col s12">
+					<h5>${postPrivacy}</h5>
 					<div id="privacyChart"></div>
 					<script>
 						var privacyChart = c3.generate({
 						    bindto: '#privacyChart',
 						    size: {
-						    	height: 600
+						    	//height: 600
+						    	height: $(window).height() - 220
 						    },
 						    data: {
 						        // iris data from R
@@ -141,9 +146,37 @@
 						    }
 						});
 					</script>
-					<c:forEach items="${privacyCount}" var="privacyPair">
-						["${privacyPair.fst}", "${privacyPair.snd}"]
+				</div>
+				<div id="test6" class="col s12">
+				  <ul class="collapsible popout" data-collapsible="accordion">
+					<c:forEach items="${groupedPostsByHoliday}" var="holidayPlace" varStatus="loop">
+					<li>
+				      <div id="cluster${loop.index}" class="collapsible-header">${holidayPlace.snd}</div>
+				      <script>
+				      	$.get('http://nominatim.openstreetmap.org/reverse?lat=${holidayPlace.fst[0].latitude}&lon=${holidayPlace.fst[0].longitude}', function(data){
+				      		var $xml = $(data);
+  							var $city = $xml.find("city");
+  							if($city.length == 0){
+  								$city = $xml.find("town");
+  							}
+  							console.log($city);
+  							var times${holidayPlace.snd} = '${holidayPlace.snd}';
+  							if(times${holidayPlace.snd} > 1){
+  								$('#cluster${loop.index}').html($city.text() + " - ${holidayPlace.snd} times");	
+  							} else {
+  								$('#cluster${loop.index}').html($city.text() + " - one time");
+  							}
+				      		
+				      	});
+				      </script>
+				      <div class="collapsible-body">
+				      	<c:forEach items="${holidayPlace.fst}" var="place">
+				      		<p style="padding-top: 8px; padding-bottom: 8px;"><a href="${place.link}" target="_blank">${place.story}</a></p>
+				      	</c:forEach>
+				      </div>
+				     </li>
 					</c:forEach>
+				  </ul>
 				</div>
 			</div>
 		</main>
