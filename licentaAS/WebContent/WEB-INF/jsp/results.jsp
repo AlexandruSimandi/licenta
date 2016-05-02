@@ -58,15 +58,15 @@
 		<main>
 		<ul id="tabs" class="tabs">
 			<li class="tab col s3"><a class="active black-text"
-				href="#test2">Locations</a></li>
-			<li class="tab col s3"><a class="black-text" href="#test1">Stats</a></li>
-			<li class="tab col s3"><a class="black-text" href="#test3">Dangerous
+				href="#test2"><i class="material-icons">place</i>Locations</a></li>
+			<li class="tab col s3"><a class="black-text" href="#test1"><i class="material-icons">poll</i> Stats</a></li>
+			<li class="tab col s3"><a class="black-text" href="#test3"><i class="material-icons">warning</i> Dangerous
 					posts</a></li>
-			<li class="tab col s3"><a class="black-text" href="#test4">Public
+			<li class="tab col s3"><a class="black-text" href="#test4"><i class="material-icons">photo</i> Public
 					Photos</a></li>
-			<li class="tab col s3"><a class="black-text" href="#test5">Privacy
+			<li class="tab col s3"><a class="black-text" href="#test5"><i class="material-icons">visibility_off</i> Privacy
 					Settings</a></li>
-			<li class="tab col s3"><a class="black-text" href="#test6">Holiday warning
+			<li class="tab col s3"><a class="black-text" href="#test6"><i class="material-icons">local_airport</i> Holiday warning
 					</a></li>						
 		</ul>
 			<div class="row">
@@ -80,6 +80,7 @@
 					</div>
 				</div>
 				<div id="test3" class="col s12">
+				<h5 class="center">These are the posts that might affect your professional life</h5>
 				<table class="highlight">
 					<thead>
 						<tr>
@@ -103,6 +104,7 @@
 				</table>
 				</div>
 				<div id="test4" class="col s12">
+				<h5 class="center">These are the photos that can be seen by anyone on facebook</h5>
 				<table class="highlight">
 					<thead>
 						<tr>
@@ -125,7 +127,7 @@
 				</table>
 				</div>
 				<div id="test5" class="col s12">
-					<h5>${postPrivacy}</h5>
+					<h5 class="center">Your default privacy setting for new posts is: ${postPrivacy}</h5>
 					<div id="privacyChart"></div>
 					<script>
 						var privacyChart = c3.generate({
@@ -148,6 +150,8 @@
 					</script>
 				</div>
 				<div id="test6" class="col s12">
+					<h5 class="center">These are all the posts considered to be created when you were not home</h5>
+					<p class="center">Showing on facebook that you are not home can attract thieves</p>
 				  <ul class="collapsible popout" data-collapsible="accordion">
 					<c:forEach items="${groupedPostsByHoliday}" var="holidayPlace" varStatus="loop">
 					<li>
