@@ -14,7 +14,7 @@
 					<div class="row"></div>
 					<a class="waves-effect waves-orange btn-large indigo darken-4" href="https://www.facebook.com/dialog/oauth?
 		client_id=475736505939108&redirect_uri=http://localhost/loginSolver&
-		scope=user_posts,user_photos"><i class="material-icons left">perm_identity</i>Login</a>
+		scope=user_posts,user_photos"><i class="material-icons left">exit_to_app</i>Login</a>
 				</div>
 			</div>
 		</main>

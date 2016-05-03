@@ -9,33 +9,37 @@ $(document).ready(function(){
 	    },
 	    data: {
 	    	xs: {
-	    		'all posts': 'x1',
-	    		'posts with location': 'x2',
-	    		'posts with photos': 'x3'
+	    		'all': 'x1',
+	    		'with location': 'x2',
+	    		'with photos': 'x3'
 	    	},
 	        //x: 'x',
 	        columns: [
 	            ['x1'].concat(labels),
 	            ['x2'].concat(locationLabels),
 	            ['x3'].concat(photoLabels),
-	            ['all posts'].concat(dataCount),
-	            ['posts with location'].concat(locationDataCount),
-	            ['posts with photos'].concat(photoDataCount)
+	            ['all'].concat(dataCount),
+	            ['with location'].concat(locationDataCount),
+	            ['with photos'].concat(photoDataCount)
 	            
 	        ],
 //	        type: 'area-spline'
 	        types: {
-	        	'all posts': 'area-spline',
-	        	'posts with location': 'area-spline',
-	        	'posts with photos': 'area-spline'
+	        	'all': 'area-spline',
+	        	'with location': 'area-spline',
+	        	'with photos': 'area-spline'
 	        }
 	    },
 	    axis: {
 	        x: {
 	            type: 'timeseries',
 	            tick: {
-	                format: '%Y-%m'
-	            }
+	                format: '%m-%Y'
+	            },
+	    		label: 'time'
+	        },
+	        y: {
+	        	label: 'number of posts'
 	        }
 	    },
 	    subchart: {
