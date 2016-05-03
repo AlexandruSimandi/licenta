@@ -120,8 +120,8 @@ public class FacebookUtils {
 		}
 		
 		ArrayList<Pair<List<Post>, Integer>> pairedList = new ArrayList<Pair<List<Post>, Integer>>();
-		System.out.println("Distance min is " + dist);
-		System.out.println(postsWithLocation.size());
+//		System.out.println("Distance min is " + dist);
+//		System.out.println(postsWithLocation.size());
 		for (Post post : postsWithLocation) {
 //			System.out.println(numberOfGroupedLocations.get(post) + " " + post.getId() + " " + post.getPlace().getLocationAsString());
 			pairedList.add(new Pair<List<Post>, Integer>(numberOfGroupedLocations.get(post), numberOfGroupedLocations.get(post).size()));
@@ -141,7 +141,9 @@ public class FacebookUtils {
 				maxPos = i;
 			}
 		}
-		clusters.remove(maxPos);
+		if(clusters.size() > 0){
+			clusters.remove(maxPos);
+		}
 		return clusters;
 	}
 	

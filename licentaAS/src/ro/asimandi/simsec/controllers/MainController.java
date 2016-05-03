@@ -14,6 +14,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -38,13 +40,19 @@ public class MainController {
 
 	//TODO if logged in redirect to home
 	@RequestMapping(value = { "/", "/login" })
-	public String login(Model model) throws IOException {
+	public String login(HttpSession session, Model model) throws IOException {
+		if(session.getAttribute("user") != null){
+			return "redirect:home";
+		}
 		model.addAttribute("screenStatus", "login");
 		return "login";
 	}
 	
 	@RequestMapping("/home")
-	public String home(Model model){
+	public String home(HttpSession session, Model model){
+		if(session.getAttribute("user") == null){
+			return "redirect:/login";
+		}
 		model.addAttribute("screenStatus", "home");
 		return "home";
 	}
@@ -85,6 +93,9 @@ public class MainController {
 
 	@RequestMapping("/results")
 	public String analyze(HttpSession session, Model model) throws IOException {
+		if(session.getAttribute("facebookUtils") == null){
+			return "redirect:/login";
+		}
 		User user = (User) session.getAttribute("user");
 		FacebookUtils facebookUtils = (FacebookUtils) session.getAttribute("facebookUtils");
 		if(user.getAnalyzed() == null || user.getAnalyzed() == false || (session != null && session.getAttribute("newAnalysis") != null && (Boolean)session.getAttribute("newAnalysis") == true)){
