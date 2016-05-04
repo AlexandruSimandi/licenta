@@ -22,9 +22,11 @@ import org.springframework.web.servlet.view.RedirectView;
 import com.restfb.experimental.api.Facebook;
 
 import ro.asimandi.simsec.DAO.PostDAO;
+import ro.asimandi.simsec.DAO.ResultDAO;
 import ro.asimandi.simsec.DAO.UserDAO;
 import ro.asimandi.simsec.models.Post;
 import ro.asimandi.simsec.models.User;
+import ro.asimandi.simsec.models.results.WorkThreat;
 import ro.asimandi.simsec.utils.FacebookUtils;
 import ro.asimandi.simsec.utils.Pair;
 
@@ -37,6 +39,8 @@ public class MainController {
 	private UserDAO userDao;
 	@Autowired
 	private PostDAO postDao;
+	@Autowired
+	private ResultDAO resultDao;
 
 	//TODO if logged in redirect to home
 	@RequestMapping(value = { "/", "/login" })
@@ -98,6 +102,7 @@ public class MainController {
 		}
 		User user = (User) session.getAttribute("user");
 		FacebookUtils facebookUtils = (FacebookUtils) session.getAttribute("facebookUtils");
+		List<Post> databasePosts;
 		if(user.getAnalyzed() == null || user.getAnalyzed() == false || (session != null && session.getAttribute("newAnalysis") != null && (Boolean)session.getAttribute("newAnalysis") == true)){
 			model.addAttribute("newAnalysis", false);
 			List<com.restfb.types.Post> allPosts = facebookUtils.readPosts();
@@ -107,11 +112,14 @@ public class MainController {
 			user.setLast_analysis(new Date(System.currentTimeMillis()));
 			userDao.deleteUser(user);
 			userDao.addUser(user);
+			databasePosts = postDao.listPost(user);
+			resultDao.removeWorkThreat(user);
+			resultDao.addWorkThreat(FacebookUtils.getWorkThreatList(databasePosts), user);
 		}
 		
 		if(!model.containsAttribute("privacyCount")){
-			List<Post> databasePosts = postDao.listPost(user);
-			List<Post> workThreatList = FacebookUtils.getWorkThreatList(databasePosts);
+			databasePosts = postDao.listPost(user);
+			List<Post> workThreatList = resultDao.getWorkThreat(user);
 			String postPrivacy = FacebookUtils.determinePrivacySettingForPosts(databasePosts);
 			List<Post> photoPostList = FacebookUtils.getPostsContainingPhotosWithBadPrivacy(databasePosts);
 			List<Pair<List<Post>, Integer>> postsWithLocation = FacebookUtils.getClusteredLocations(databasePosts, 1);
