@@ -22,13 +22,12 @@
 					</c:if>
 					<c:if test="${user != null}">
 						<li class="${screenStatus == 'home' ? 'active' : ''}"><a class="waves-effect waves-orange ${screenStatus == 'home' ? 'white-text' : ''}" href="home"><i class="material-icons left">perm_identity</i>Account</a></li>
+						<li class="${screenStatus == 'results' ? 'active' : ''}"><a class="waves-effect waves-orange ${screenStatus == 'results' ? 'white-text' : ''}" href="loading"><i class="material-icons left">assignment</i>Results</a></li>
 					</c:if>
-					<li class="${screenStatus == 'results' ? 'active' : ''}"><a class="waves-effect waves-orange ${screenStatus == 'results' ? 'white-text' : ''}" href="loading"><i class="material-icons left">assignment</i>Results</a></li>
-					<li class="${screenStatus == 'recommendations' ? 'active' : ''}"><a class="waves-effect waves-orange ${screenStatus == 'recommendations' ? 'white-text' : ''}" href="#!"><i class="material-icons left">assignment_late</i>Recommendations</a></li>
 				</ul>
 				<div class="nav-wrapper">
 					<div class="container">
-						<a href="#" data-activates="nav-mobile" class="button-collapse top-nav full hide-on-large-only"><i class="mdi-navigation-menu"></i></a>
+						<a href="#" data-activates="nav-mobile" class="button-collapse top-nav full hide-on-large-only" style="margin-top: 11px;"><i class="mdi-navigation-menu"></i></a>
 						<a href="/" class="brand-logo center">
 							<h3>SimSec</h3>
 						</a>

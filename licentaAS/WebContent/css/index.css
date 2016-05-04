@@ -39,3 +39,23 @@ nav ul li.active {
 .active .waves-effect.waves-orange .waves-ripple {
 	background-color: rgba(26, 35, 126, 0.70);
 }
+
+.tab i {
+	font-size: 1.3rem;
+}
+
+.c3-axis-y-label {
+	font-size: 1.5em;
+}
+
+.c3-axis-x-label {
+	font-size: 1.5em;
+}
+
+.c3-legend-item text {
+	font-size: 1.1em;
+}
+
+.c3-chart-arcs text {
+	font-size: 2em !important;
+}
